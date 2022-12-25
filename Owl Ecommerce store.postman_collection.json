@@ -1,0 +1,342 @@
+{
+  "info": {
+    "_postman_id": "12884d1e-199a-46d9-8458-18ae16f4865b",
+    "name": "Owl Ecommerce store",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13623630"
+  },
+  "item": [
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Create order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfdXNlckBleGFtcGxlLmNvbSIsImlkIjoiNjM4ODgxMDRiMDEyOGY0YmJlZjNjY2FjIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTY3MTA4NTUyNSwiZXhwIjoxNjcxMTI1MTI1fQ.Jh6C4oh6gL-7_hKjhPyBzg7nLqQE2ZJLvGEeq5-hdx8",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n        {\r\n            \"itemId\": {\r\n                \"address\": {\r\n                    \"street\": \"b-4\",\r\n                    \"country\": \"US\",\r\n                    \"state\": \"CA\",\r\n                    \"city\": \"inverness\",\r\n                    \"zip\": \"34470\",\r\n                    \"phoneNo\": 9087654651\r\n                },\r\n                \"_id\": \"638888509c545c81d70a73e5\",\r\n                \"cardNumber\": \"1111444433339999\",\r\n                \"expiryDate\": \"2025-12-02T08:00:00.000Z\",\r\n                \"cvv\": \"389\",\r\n                \"socialSecurityNumber\": \"987654321\",\r\n                \"drivingLicenceNumber\": \"87654321\",\r\n                \"level\": \"classic\",\r\n                \"class\": \"debit\",\r\n                \"extraField\": [],\r\n                \"price\": \"645\",\r\n                \"bankName\": \"...test bank\",\r\n                \"type\": \"visa\",\r\n                \"otherDetails\": \"...test\",\r\n                \"createdBy\": \"63888125b0128f4bbef3ccaf\",\r\n                \"createdAt\": \"2022-12-01T10:56:16.784Z\",\r\n                \"updatedAt\": \"2022-12-01T10:56:16.784Z\",\r\n                \"__v\": 0\r\n            }\r\n        }\r\n    ],\r\n    \"payWith\":\"BTC\",\r\n    \"totalPrice\":\"645\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/order",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfdXNlckBleGFtcGxlLmNvbSIsImlkIjoiNjM4ODgxMDRiMDEyOGY0YmJlZjNjY2FjIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTY3MTE3MTM1NywiZXhwIjoxNjcxMjEwOTU3fQ.FjX2I7e5_jiqh7z_LqxEmwrvuW67QeVCCfWDRcL_ZRk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/order/user-orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "order", "user-orders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get seller Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfdXNlckBleGFtcGxlLmNvbSIsImlkIjoiNjM4ODgxMDRiMDEyOGY0YmJlZjNjY2FjIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTY3MTA4NTUyNSwiZXhwIjoxNjcxMTI1MTI1fQ.Jh6C4oh6gL-7_hKjhPyBzg7nLqQE2ZJLvGEeq5-hdx8",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/order/seller-orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "order", "seller-orders"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\":\"test_user1\",\r\n  \"email_id\":\"test_user1@example.com\",\r\n  \"password\":\"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login user/seller",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email_id\":\"test_user@example.com\",\r\n  \"password\":\"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register seller",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\":\"test_seller1\",\r\n  \"email_id\":\"test_seller1@example.com\",\r\n  \"password\":\"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/registerSeller",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "registerSeller"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get all products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/card",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "card"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": []
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Create cart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"itemId\":\"637486ba7edf2b5deb9f71fd\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/user/cart",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "user", "cart"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GEt user cart",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfdXNlckBleGFtcGxlLmNvbSIsImlkIjoiNjM4ODgxMDRiMDEyOGY0YmJlZjNjY2FjIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTY3MTE3MTEzOSwiZXhwIjoxNjcxMjEwNzM5fQ.aX6pa2xr8lCyXlsX8qyuTpV3OyWL0TtnNIm4JVX6Jbg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/user/cart",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "user", "cart"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove item from cart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"itemId\":\"637486ba7edf2b5deb9f71fc\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/user/cart/delete",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "user", "cart", "delete"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Billings",
+      "item": [
+        {
+          "name": "Create Deposit",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfdXNlcjFAZXhhbXBsZS5jb20iLCJpZCI6IjYzOWM0MDllNWQ4Y2RjYjdiYzE5NjkwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE2NzExODQ1NTQsImV4cCI6MTY3MTIyNDE1NH0.bC7bcAb8SdfAf5Xt9-VkwZWivKtkypdgcUSOWiyvZmY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"amount\":\"4.88\",\r\n    \"cur2\":\"BTC\",\r\n    \"buyers_email\":\"test_user1@example.com\",\r\n    \"buyers_name\":\"test_user1\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/billing",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "billing"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user billing list",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfdXNlckBleGFtcGxlLmNvbSIsImlkIjoiNjM4ODgxMDRiMDEyOGY0YmJlZjNjY2FjIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTY3MTE4NDk0NiwiZXhwIjoxNjcxMjI0NTQ2fQ.YjXemoidQ31tiPPuuRCbBYMEDC9ub1PJae5quLDJt5k",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/billing",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "billing"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

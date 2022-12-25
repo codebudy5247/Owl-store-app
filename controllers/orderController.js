@@ -1,0 +1,123 @@
+const Order = require("../models/orderModel");
+const Coinpayments = require("coinpayments");
+
+const client = new Coinpayments({
+  key: process.env.PUBLIC_KEY,
+  secret: process.env.SECRET_KEY,
+});
+
+//create order
+exports.createOrder = async (req, res) => {
+  const { items, status, payWith, totalPrice } = req.body;
+  const newOrder = new Order({
+    seller: req.body.items[0].itemId.createdBy,
+    items: items.map((x) => ({ item: x.itemId })),
+    payWith,
+    totalPrice,
+    user: req.user._id,
+    status,
+  });
+  try {
+    const order = await newOrder.save();
+    res.status(201).send({ message: "New Order Created", order });
+    let user1 = req.user
+    if(user1){
+      user1.clearCart()
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//get user order
+exports.getUserOrder = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user._id });
+    res.send(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//get seller order
+exports.getSellerOrder = async (req, res) => {
+  try {
+    const seller = req.query.seller || "";
+    const sellerFilter = seller ? { seller } : {};
+    const orders = await Order.find({ ...sellerFilter });
+    res.send(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//update order status
+
+//Payment Integration
+
+//Admin account info.
+exports.getAccountInfo = async (req, res) => {
+  try {
+    const info = await client.getBasicInfo();
+    const accountBalance = await client.balances({ all: "0" }); //{ all: "1"} get all coins balance
+    const depositAddress = await client.getDepositAddress({ currency: "BTC" }); //{currency:"BTC"} - Any enabled currency. e.g 'BTC'
+    res.status(200).json({
+      AccountInfo: info,
+      AccountBalance: accountBalance,
+      DepositAddress: depositAddress,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//Create Tx
+exports.createTx = async (req, res) => {
+  try {
+    const { orderId, cur1, cur2, amount, buyers_email, buyers_name } = req.body;
+    const depositAddress = await client.getDepositAddress({ currency: "BTC" });
+
+    let options = {
+      cmd: "create_transaction",
+      currency1: cur1,
+      currency2: cur2,
+      amount: amount,
+      buyer_email: buyers_email,
+      address: depositAddress,
+      buyer_name: buyers_name,
+    };
+
+    let create_payment = await client.createTransaction(options);
+    let updateFields = {};
+    updateFields.tx_id = create_payment.txn_id;
+    let order = await Order.findOneAndUpdate(
+      { _id: orderId },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    let user = req.user
+    if(user){
+      user.clearCart()
+    }
+    res.status(201).send({ message: "New Tx Created", create_payment, order });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// //Get Tx info
+// exports.txInfo = async (req, res) => {
+//   const { txID } = req.body;
+//   try {
+//     let transaction_info = await client.getTx({ txid: txID });
+//     res.status(200).send({ message: "Tx info...", transaction_info });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+//Get multiple tx status
+
+//Get a list of tx ids
