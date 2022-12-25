@@ -22,9 +22,9 @@ dotenv.config();
 // app.use('/', express.static(path.join(__dirname, 'public')))
 // app.use('/', require('./ROUTES/root'))
 
-app.get("/", (req, res) => {
-  res.json({ msg: "Owl Store! Ecommerce" });
-});
+// app.get("/", (req, res) => {
+//   res.json({ msg: "Owl Store! Ecommerce" });
+// });
 
 
 //Routes
