@@ -47,6 +47,8 @@ const TableComp = (props: any) => {
 
   const [disabled, setDisabled] = useState(false);
 
+  
+
   //Check item is present or not in the cart.
   function checkItem(arr: any, item_id: string) {
     const found = arr.some((el: any) => el.itemId._id === item_id);
@@ -93,6 +95,8 @@ const TableComp = (props: any) => {
       return <Icon icon="logos:mastercard" height={40} width={40} />;
     if (type === "visa")
       return <Icon icon="logos:visa" height={40} width={40} />;
+    if (type === "discover")
+      return <Icon icon="logos:discover" height={40} width={40} />;
   };
 
   return (

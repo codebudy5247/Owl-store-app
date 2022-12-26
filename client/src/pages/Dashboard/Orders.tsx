@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import * as Api from "../../services/api";
 import UserOrders from "../../components/layouts/UserOrders";
+import MerchantOrders from "../../components/layouts/MerchantOrders"
 
 const Orders = () => {
   let user_role = localStorage.getItem("userRole");
@@ -61,7 +62,7 @@ const Orders = () => {
       )}
       {user_role === "ROLE_SELLER" ? (
         <>
-          <UserOrders
+          <MerchantOrders
             userOrders={sellerOrders}
             loadingUserOrders={loadingUserOrders}
           />

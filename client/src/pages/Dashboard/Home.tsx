@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+import * as Api from "../../services/api";
 import Navbar from "../../components/Navbar";
 import { Box } from "@mui/material";
 import CardList from "../../components/layouts/CardList";
@@ -15,6 +17,20 @@ const Home = () => {
   const USER_ROLE = localStorage.getItem("userRole");
   const approvedByAdmin: any = localStorage.getItem("approvedByAdmin");
 
+  const [cardList, setCardList] = useState<any>([]);
+
+  console.log("cardList",cardList);
+  
+  useEffect(() => {
+    const init = async () => {
+      const [err, res] = await Api.getCards();
+      if (res) {
+        setCardList(res.data);
+      }
+    };
+    init();
+  }, []);
+
   const logoutHandler = () =>{
     localStorage.removeItem("authToken");
     localStorage.removeItem("approvedByAdmin");
@@ -28,8 +44,8 @@ const Home = () => {
             <Navbar />
             {/* <Banner /> */}
             <Header title="Search Cards" subtitle="Owl Store > Search Cards" />
-            <SearchFilter />
-            <CardList />
+            <SearchFilter cardList={cardList} />
+            {/* <CardList cardList={cardList}/> */}
             <Footer />
           </Box>
           <ToastContainer />

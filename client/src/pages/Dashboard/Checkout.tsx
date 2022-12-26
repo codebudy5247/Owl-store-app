@@ -186,6 +186,8 @@ const Checkout = () => {
       return <Icon icon="logos:mastercard" height={40} width={40} />;
     if (type === "visa")
       return <Icon icon="logos:visa" height={40} width={40} />;
+      if (type === "discover")
+      return <Icon icon="logos:discover" height={40} width={40} />;
   };
   const removeFromCart = async (itemID: any) => {
     setLoading(true);
