@@ -101,7 +101,13 @@ const Checkout = () => {
 
   const getUserCart = async () => {
     const [err, res] = await Api.getCartItems();
+    if(err){
+      console.log(err,"getCartItems err");
+      
+    }
     if (res) {
+      console.log("getCartItems err",res);
+      
       setTotalPrice(res?.data?.totalPrice);
       setCartItems(res?.data?.cart);
     }

@@ -57,21 +57,32 @@ export default function Header(props: any) {
 
   const [totalCartPrice, setTotalCartPrice] = useState("");
   const [walletBalance, setWalletBalance] = useState("");
+  
   useEffect(() => {
     const init = async () => {
       const [err, res] = await Api.getCartItems();
+      if(err){
+        console.log(err);
+      }
       if (res) {
+        console.log(res,"getCartItems");
+        
         setTotalCartPrice(res?.data?.totalPrice);
       }
 
       const [balanceErr, balanceRes] = await Api.getUser();
+      if(balanceErr){
+        console.log(balanceErr);
+      }
+      console.log("balanceRes",balanceRes);
+      
       if (balanceRes) {
         setWalletBalance(balanceRes?.data?.walletBalance);
         // console.log("balanceRes",balanceRes?.data?.walletBalance);
       }
     };
     init();
-  }, []);
+  }, [walletBalance]);
 
   const { mobileView, drawerOpen } = state;
   useEffect(() => {

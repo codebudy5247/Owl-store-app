@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   Card,
   Container,
@@ -9,7 +9,6 @@ import {
   Chip,
   Autocomplete,
   InputLabel,
-  Button,
   getSpeedDialActionUtilityClass,
   Table,
   TableRow,
@@ -27,6 +26,22 @@ import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import SearchIcon from "@mui/icons-material/Search";
 import { Icon } from "@iconify/react";
 import moment from "moment";
+import { styled } from "@mui/material/styles";
+import Button, { ButtonProps } from "@mui/material/Button";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { toast } from "react-toastify";
+import * as Api from "../../services/api";
+
+const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
+  color: "#EE2B70",
+  backgroundColor: "#FDE7EF",
+  "&:hover": {
+    backgroundColor: "#EE2B70",
+    color: "white",
+  },
+}));
+
+
 
 const classOption = [
   {
@@ -78,6 +93,53 @@ const SearchFilter = (props: any) => {
     if (type === "discover")
       return <Icon icon="logos:discover" height={40} width={40} />;
   };
+
+  const [cartItems, setCartItems] = useState<any>();
+
+  const [disabled, setDisabled] = useState(false);
+
+  
+
+  //Check item is present or not in the cart.
+  function checkItem(arr: any, item_id: string) {
+    const found = arr?.some((el: any) => el.itemId._id === item_id);
+    if (found) return true;
+  }
+
+  const addToCart = async (item_id: string) => {
+    let itemIsPresentOrNot = checkItem(cartItems, item_id);
+
+    if (itemIsPresentOrNot === true) {
+      toast.info("This item already exist in your cart.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    } else {
+      const [addToCartError, addToCartResponse] = await Api.addToCart(item_id);
+      if (addToCartError) {
+        toast.error("Something went wrong.", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+      if (addToCartResponse) {
+        toast.success("Item successfully added to cart.", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    const getCart = async () => {
+      const [getUserCartErr, getUserCartRes] = await Api.getCartItems();
+      if (getUserCartErr) {
+        toast.error("Something went wrong.", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+      setCartItems(getUserCartRes?.data?.cart);
+    };
+    getCart();
+  }, []);
 
   // const filterList = props?.cardList?.filter(
   //   (val: any) => val?.address?.city === city
@@ -342,6 +404,14 @@ const SearchFilter = (props: any) => {
                             {card?.price}
                           </Typography>
                         </TableCell>
+                        <TableCell sx={{ cursor: "pointer" }}>
+                    <ColorButton
+                      variant="contained"
+                      onClick={() => addToCart(card?._id)}
+                    >
+                      <AddShoppingCartIcon />
+                    </ColorButton>
+                  </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>

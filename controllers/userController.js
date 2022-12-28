@@ -43,7 +43,7 @@ exports.addToCart = async (req, res) => {
   }
   try {
     const user = req.user;
-    const cartItems = user?.cart?.items;
+    // const cartItems = user?.cart?.items;
     // cartItems.forEach((item) => {
     //   if (item.itemId.toString() === itemId)
     //   res.status(400).json({ message: "This item already exist in your cart" });
@@ -74,7 +74,7 @@ exports.getCart = async (req, res) => {
       const cartItems = user.cart.items;
       let totalPrice = 0;
       const total = cartItems.reduce(
-        (accumulator, current) => accumulator + current.itemId.price * 1,
+        (accumulator, current) => accumulator + current?.itemId?.price * 1,
         totalPrice
       );
       res.json({
