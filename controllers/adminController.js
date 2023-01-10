@@ -160,17 +160,17 @@ exports.deductMoney = async (req, res) => {
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
     let products = await Order.findById(orderId);
-    let updateProductFields = {};
-    updateProductFields.avaibility = "Sold";
-    const promises = products?.items.map(
-      async (obj) =>
-        await Card.findOneAndUpdate(
-          { _id: obj.item._id },
-          { $set: updateProductFields },
-          { new: true, upsert: true, setDefaultsOnInsert: true }
-        )
-    );
-    await Promise.all(promises);
+    // let updateProductFields = {};
+    // updateProductFields.avaibility = "Sold";
+    // const promises = products?.items.map(
+    //   async (obj) =>
+    //     await Card.findOneAndUpdate(
+    //       { _id: obj.item._id },
+    //       { $set: updateProductFields },
+    //       { new: true, upsert: true, setDefaultsOnInsert: true }
+    //     )
+    // );
+    // await Promise.all(promises);
     const createSoldCard = products?.items.map(async (o) => {
       const newSoldCard = new SoldCard({
         cardNumber: o.item.cardNumber,
@@ -188,6 +188,12 @@ exports.deductMoney = async (req, res) => {
       await newSoldCard.save();
     });
     await Promise.all(createSoldCard);
+
+    const deleteSoldCards = products.items.map(async (obj) =>{
+      console.log(obj);
+      await Card.findByIdAndRemove(obj.item._id);
+    })
+    await Promise.all(deleteSoldCards)
     res.status(200).send({ message: "success!", order });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -220,7 +226,9 @@ exports.updateOrder = async (req, res) => {
   }
 };
 //Delete order
-exports.deleteOrder = async (req, res) => {};
+exports.deleteOrder = async (req, res) => {
+
+};
 
 //Get all billings
 exports.getBillings = async (req, res) => {
@@ -232,7 +240,9 @@ exports.getBillings = async (req, res) => {
   }
 };
 //Delete Billing
-exports.deleteBilling = async (req, res) => {};
+exports.deleteBilling = async (req, res) => {
+
+};
 
 //withdrawal request
 //Update Status

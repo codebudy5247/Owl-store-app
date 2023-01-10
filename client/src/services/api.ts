@@ -1,7 +1,7 @@
 import * as axios from "axios";
 import { ArrayDestructuringAssignment } from "typescript";
 
-const apiURL = "http://165.232.185.229:5000/api";
+const apiURL = "http://localhost:5000/api";
 
 // "http://localhost:5000/api" || "https://owl-store.onrender.com/api" || http://165.232.185.229:5000/api
 

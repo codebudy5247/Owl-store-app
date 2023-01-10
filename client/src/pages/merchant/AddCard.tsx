@@ -352,7 +352,7 @@ const AddCard = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Label"
+                label="Level"
                 inputProps={{
                   ...params.inputProps,
                   autoComplete: "new-password", // disable autocomplete and autofill

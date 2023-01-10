@@ -155,7 +155,7 @@ const OrderDetails = (props:any) => {
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          {moment(item.item?.expiryDate).format("DD-MM-YYYY")}
+                          {moment(item.item?.expiryDate).format("MM-YYYY")}
                         </TableCell>
                         <TableCell>{item.item?.cvv}</TableCell>
                         <TableCell>฿{item.item?.price}</TableCell>

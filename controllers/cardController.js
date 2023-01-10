@@ -1,6 +1,7 @@
 const Card = require("../models/cardModel");
 const User = require("../models/userModel");
 const ObjectId = require("mongoose").Types.ObjectId;
+const SoldCard = require("../models/SoldCard")
 
 //create card
 exports.createCard = async (req, res) => {
@@ -76,6 +77,36 @@ exports.getSellerCards = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+//Get sold cards (Seller)
+exports.getSoldCards = async (req,res) =>{
+  try {
+    const sellerId = req.user._id;
+    const result = await User.aggregate([
+      {
+        $match: {
+          _id: ObjectId(sellerId),
+        },
+      },
+      {
+        $lookup: {
+          from: "SoldCards", //must be collection name for cards
+          localField: "_id",
+          foreignField: "createdBy",
+          as: "SoldCards",
+        },
+      },
+    ]);
+    if (result.length > 0) {
+      console.log(result);
+      res.send(result[0].SoldCards);
+    } else {
+      res.status(404).send("Seller not found");
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
 
 //Update Card
 exports.updateCard = async (req, res) => {

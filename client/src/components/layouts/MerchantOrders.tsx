@@ -182,7 +182,7 @@ const UserOrders = (props: any) => {
                   <TableBody>
                     {props?.userOrders.map((order: any) => (
                       <>
-                        <TableRow key={order._id}>
+                        <TableRow key={order._id} onClick={() => orderDetails(order)} sx={{cursor:'pointer'}}>
                           <TableCell sx={{}}>
                             <Typography
                               variant="subtitle2"
