@@ -130,7 +130,11 @@ exports.depositMoney = async (req, res) => {
 
     let updateBillingFields = {};
     updateBillingFields.paidByAdmin = true;
-    let billing = await Billing.findByIdAndUpdate();
+    let billing = await Billing.findByIdAndUpdate(
+      { _id: billingId },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
     res
       .status(200)
       .send({ message: `Deposited ${amount}$ to ${user?.username}` });
