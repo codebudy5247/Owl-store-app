@@ -45,7 +45,7 @@ const Footer = () => {
             />
           </Box>
 
-          <Box sx={{ display: "flex", mt: "12px" }}>
+          {/* <Box sx={{ display: "flex", mt: "12px" }}>
             <Link variant="h6" color="inherit" underline="none">
               Cards
             </Link>
@@ -61,7 +61,7 @@ const Footer = () => {
             <Link variant="h6" color="inherit" underline="none" sx={{ ml: 2 }}>
               Rules
             </Link>
-          </Box>
+          </Box> */}
         </Box>
         <hr style={{ color: "#000000", border: "1px solid #000000" }} />
         <Box
