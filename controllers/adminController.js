@@ -3,6 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Order = require("../models/orderModel");
 const Billing = require("../models/billingModel");
+const Card = require("../models/cardModel");
+const SoldCard = require("../models/SoldCard");
+
 //Register Admin
 exports.registerAdmin = async (req, res) => {
   const { username, email_id, password } = req.body;
@@ -37,6 +40,37 @@ exports.registerAdmin = async (req, res) => {
   }
 };
 
+//Add User
+exports.addUser = async (req, res) => {
+  const { username, email_id, password, role } = req.body;
+  try {
+    const oldUser = await User.findOne({ email_id });
+    if (oldUser)
+      return res.status(400).json({ message: "User already exists" });
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const result = await User.create({
+      username,
+      email_id,
+      password: hashedPassword,
+      role: role,
+    });
+
+    const token = jwt.sign(
+      { email: result.email, id: result._id, role: result.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "11h",
+      }
+    );
+
+    res.status(201).json({ result, token, msg: "User Added!" });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+
+    console.log(error);
+  }
+};
+
 //Approved seller
 exports.approveSeller = async (req, res) => {
   try {
@@ -64,25 +98,6 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-//Get all orders
-exports.getOrders = async (req, res) => {
-  try {
-    const orders = await Order.find();
-    res.json({ orders: orders });
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
-  }
-};
-
-//Get all billings
-exports.getBillings = async (req, res) => {
-  try {
-    const billings = await Billing.find();
-    res.json({ billings: billings });
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
-  }
-};
 //Delete user
 exports.deleteUser = async (req, res) => {
   try {
@@ -102,7 +117,7 @@ exports.deleteUser = async (req, res) => {
 //Payment approved / deposit balance
 exports.depositMoney = async (req, res) => {
   try {
-    const { amount, userId } = req.body;
+    const { amount, userId, billingId } = req.body;
     let recipient = await User.findById(userId);
     let updateFields = {};
     let moneyToDeposit = recipient.walletBalance + amount * 1;
@@ -112,6 +127,10 @@ exports.depositMoney = async (req, res) => {
       { $set: updateFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
+
+    let updateBillingFields = {};
+    updateBillingFields.paidByAdmin = true;
+    let billing = await Billing.findByIdAndUpdate();
     res
       .status(200)
       .send({ message: `Deposited ${amount}$ to ${user?.username}` });
@@ -133,7 +152,6 @@ exports.deductMoney = async (req, res) => {
       { $set: updateFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-
     let updateOrderFields = {};
     updateOrderFields.isPaid = true;
     let order = await Order.findOneAndUpdate(
@@ -141,10 +159,91 @@ exports.deductMoney = async (req, res) => {
       { $set: updateOrderFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
+    let products = await Order.findById(orderId);
+    let updateProductFields = {};
+    updateProductFields.avaibility = "Sold";
+    const promises = products?.items.map(
+      async (obj) =>
+        await Card.findOneAndUpdate(
+          { _id: obj.item._id },
+          { $set: updateProductFields },
+          { new: true, upsert: true, setDefaultsOnInsert: true }
+        )
+    );
+    await Promise.all(promises);
+    const createSoldCard = products?.items.map(async (o) => {
+      const newSoldCard = new SoldCard({
+        cardNumber: o.item.cardNumber,
+        expiryDate: o.item.expiryDate,
+        cvv: o.item.cvv,
+        socialSecurityNumber: o.item.socialSecurityNumber,
+        drivingLicenceNumber: o.item.drivingLicenceNumber,
+        price: o.item.price,
+        createdBy: o.item.createdBy,
+        avaibility: o.item.avaibility,
+        type: o.item.type,
+        country: o.item.address.country,
+        state: o.item.address.state,
+      });
+      await newSoldCard.save();
+    });
+    await Promise.all(createSoldCard);
     res.status(200).send({ message: "success!", order });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+//Get all orders
+exports.getOrders = async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json({ orders: orders });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+//Update order status
+exports.updateOrder = async (req, res) => {
+  const { orderId, status } = req.body;
+  try {
+    let updateFields = {};
+    updateFields.status = status;
+    let order = await Order.findOneAndUpdate(
+      { _id: orderId },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.status(200).send({ message: "Updated", order });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+//Delete order
+exports.deleteOrder = async (req, res) => {};
+
+//Get all billings
+exports.getBillings = async (req, res) => {
+  try {
+    const billings = await Billing.find();
+    res.json({ billings: billings });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+//Delete Billing
+exports.deleteBilling = async (req, res) => {};
+
 //withdrawal request
+//Update Status
+//Delete
+
+//News
+//Create
+//Update
+//Delete
+
+//Tickets
+//Create
+//Update
+//Delete

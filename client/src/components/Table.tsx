@@ -161,13 +161,17 @@ const TableComp = (props: any) => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <img
+                    {/* <img
+                     crossOrigin="anonymous"
                       loading="lazy"
                       width="50"
                       height="25"
                       src={`https://countryflagsapi.com/png/${card?.address?.country?.toLowerCase()}`}
-                      alt=""
-                    />
+                      alt="country Img"
+                    /> */}
+                     <Typography variant="subtitle2" noWrap>
+                      {card?.address?.country}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" noWrap>
@@ -181,7 +185,7 @@ const TableComp = (props: any) => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2" noWrap>
-                      {card?.price}
+                    $ {card?.price}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ cursor: "pointer" }}>

@@ -25,7 +25,7 @@ const UserDetails = (props: any) => {
         variant="subtitle1"
         sx={{ fontSize: "medium", color: "text.secondary" }}
       >
-        {user?.email_id}{" "}
+        {user?._id}{" "}
       </Typography>
     </>
   );

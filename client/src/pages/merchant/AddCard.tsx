@@ -145,16 +145,26 @@ const AddCard = () => {
             onChange={onChangeCCNumber}
           />
           {/* Expiry Date */}
-          <TextField
-            type="date"
+          {/* <TextField
+            type="month"
             fullWidth
             id="base"
             label="Expiry Date"
             variant="outlined"
-            defaultValue="2017-05-24"
+            // value="2018-8"
             InputLabelProps={{ shrink: true, required: true }}
             onChange={onChangeExpiryDate}
-          />
+          /> */}
+          <label>Expiry Date</label>
+          <input
+            width={150}
+            type="month"
+            id="start"
+            name="start"
+            min="2022-01"
+            defaultValue="2022-01"
+            onChange={onChangeExpiryDate}
+          ></input>
         </Stack>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
           {/* CVV */}

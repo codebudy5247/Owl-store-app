@@ -44,6 +44,7 @@ const TABLE_HEAD = [
   { id: "class", label: "Class", alignRight: true },
   // { id: "extra", label: "Extra", alignRight: true },
   { id: "price", label: "Price", alignRight: true },
+  { id: "availabilitystatus", label: "Availability Status", alignRight: true }
 ];
 
 const displayIcon = (type: any) => {
@@ -157,16 +158,17 @@ const TotalCards = () => {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        {/* <img
+                        <img
+                          crossOrigin="anonymous"
                           loading="lazy"
                           width="50"
                           height="25"
                           src={`https://countryflagsapi.com/png/${card?.address?.country?.toLowerCase()}`}
                           alt=""
-                        /> */}
-                        <Typography variant="subtitle2" noWrap>
+                        />
+                        {/* <Typography variant="subtitle2" noWrap>
                           {card?.address?.country}
-                        </Typography>
+                        </Typography> */}
                       </TableCell>
                       <TableCell>
                         <Typography variant="subtitle2" noWrap>
@@ -183,14 +185,19 @@ const TotalCards = () => {
                           $ {card?.price}
                         </Typography>
                       </TableCell>
-                      <TableCell sx={{ cursor: "pointer" }}>
+                      <TableCell sx={{}}>
+                            <Typography variant="subtitle2" noWrap>
+                              {card?.avaibility}
+                            </Typography>
+                          </TableCell>
+                      {/* <TableCell sx={{ cursor: "pointer" }}>
                         <ColorButton
                           variant="contained"
                           onClick={() => updateProduct(card)}
                         >
                           <EditIcon />
                         </ColorButton>
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell sx={{ cursor: "pointer" }}>
                         <ColorButton
                           variant="contained"
@@ -199,6 +206,7 @@ const TotalCards = () => {
                           <DeleteIcon />
                         </ColorButton>
                       </TableCell>
+
                     </TableRow>
                   </>
                 ))}

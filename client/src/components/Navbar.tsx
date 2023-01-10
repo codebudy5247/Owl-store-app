@@ -29,25 +29,6 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   },
 }));
 
-const headersData = [
-  {
-    label: "Listings",
-    href: "/listings",
-  },
-  {
-    label: "Mentors",
-    href: "/mentors",
-  },
-  {
-    label: "My Account",
-    href: "/account",
-  },
-  {
-    label: "Log Out",
-    href: "/logout",
-  },
-];
-
 export default function Header(props: any) {
   const navigate = useNavigate();
   const [state, setState] = useState({
@@ -177,6 +158,9 @@ export default function Header(props: any) {
             <MenuItem onClick={() => navigate("/total-cards")}>
               Products
             </MenuItem>
+            <MenuItem onClick={() => navigate("/news")}>News</MenuItem>
+            <MenuItem onClick={() => navigate("/")}>Tickets</MenuItem>
+            <MenuItem onClick={() => navigate("/")}>Rules</MenuItem>
             <ColorButton
               variant="contained"
               startIcon={<AccountBalanceWalletIcon />}
@@ -195,7 +179,9 @@ export default function Header(props: any) {
             <MenuItem onClick={onClickCardHandler}>Cards</MenuItem>
             <MenuItem onClick={onClickCartHandler}>Order</MenuItem>
             <MenuItem onClick={onClickBillingHandler}>Billings</MenuItem>
-
+            <MenuItem onClick={() => navigate("/news")}>News</MenuItem>
+            <MenuItem onClick={() => navigate("/")}>Tickets</MenuItem>
+            <MenuItem onClick={() => navigate("/")}>Rules</MenuItem>
             <ColorButton
               variant="contained"
               startIcon={<AccountBalanceWalletIcon />}
@@ -287,18 +273,43 @@ export default function Header(props: any) {
             >
               Products
             </Button>
-            {/* <Button
-           sx={{
-             fontFamily: "Open Sans, sans-serif",
-             fontWeight: 500,
-             size: "15px",
-             marginLeft: "18px",
-             color: "black",
-           }}
-           onClick={() => navigate("/merchant-withdraw")}
-         >
-           Withdraw
-         </Button> */}
+
+            <Button
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/news")}
+            >
+              News
+            </Button>
+            <Button
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/tickets")}
+            >
+              Tickets
+            </Button>
+            <Button
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/rules")}
+            >
+              Rules
+            </Button>
             <ColorButton
               variant="contained"
               startIcon={<AccountBalanceWalletIcon />}
@@ -349,6 +360,43 @@ export default function Header(props: any) {
               onClick={onClickBillingHandler}
             >
               Billings
+            </Button>
+
+            <Button
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/news")}
+            >
+              News
+            </Button>
+            <Button
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/tickets")}
+            >
+              Tickets
+            </Button>
+            <Button
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/rules")}
+            >
+              Rules
             </Button>
 
             <ColorButton

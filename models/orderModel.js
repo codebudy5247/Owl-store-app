@@ -1,4 +1,4 @@
-const { string } = require("joi");
+const { string, boolean } = require("joi");
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema(
@@ -32,6 +32,10 @@ const OrderSchema = new mongoose.Schema(
     isPaid: { type: Boolean, default: false },
     tx_id:{
       type:String
+    },
+    withdrawalRequestCreated:{
+      type:Boolean,
+      default:'false'
     }
   },
   { timestamps: true }

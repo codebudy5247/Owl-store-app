@@ -157,14 +157,14 @@ const Signin = () => {
               alignContent: "center",
             }}
           >
-            <Stack
+            {/* <Stack
               direction="row"
               alignItems="center"
               justifyContent="space-between"
               sx={{ my: 2 }}
             >
               <Link variant="subtitle2">Forgot password?</Link>
-            </Stack>
+            </Stack> */}
           </Box>
           <Box
             sx={{
@@ -173,7 +173,7 @@ const Signin = () => {
               alignContent: "center",
             }}
           >
-            <Typography variant="body2" sx={{ mt: { md: -2 } }}>
+            <Typography variant="body2" sx={{ mt: { md: 1 } }}>
               Don’t have an account? {""}? {""}
               <Link
                 variant="subtitle2"

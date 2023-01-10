@@ -28,9 +28,9 @@ const OrderSummary = (props:any) => {
               <Typography variant="subtitle1" sx={{ color: "error.main" }}>
                 $ {props?.totalPrice}
               </Typography>
-              <Typography variant="caption" sx={{ fontStyle: "italic" }}>
+              {/* <Typography variant="caption" sx={{ fontStyle: "italic" }}>
                 (VAT included if applicable)
-              </Typography>
+              </Typography> */}
             </Box>
           </Stack>
         </Stack>

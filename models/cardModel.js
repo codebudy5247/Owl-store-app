@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 
 const addressInfo = {
@@ -63,6 +64,11 @@ const CardSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
+    avaibility:{
+      type: String,
+      enum: ["Sold","Available"],
+      default: "Available",
+    }
   },
   { timestamps: true }
 );

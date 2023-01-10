@@ -101,13 +101,12 @@ const Checkout = () => {
 
   const getUserCart = async () => {
     const [err, res] = await Api.getCartItems();
-    if(err){
-      console.log(err,"getCartItems err");
-      
+    if (err) {
+      console.log(err, "getCartItems err");
     }
     if (res) {
-      console.log("getCartItems err",res);
-      
+      console.log("getCartItems err", res);
+
       setTotalPrice(res?.data?.totalPrice);
       setCartItems(res?.data?.cart);
     }
@@ -157,32 +156,12 @@ const Checkout = () => {
         });
       }
       if (deduct_amn_res) {
-        console.log({ deduct_amn_res });
+        toast.success("Order placed!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         handleOpen();
+        navigate("/orders");
       }
-
-      //   const [create_tx_err, create_tx_res] = await Api.createTx(
-      //     create_order_res?.data?.order?._id,
-      //     "BTC",
-      //     selectedCoin,
-      //     totalPrice,
-      //     user?.email_id,
-      //     user?.username
-      //   );
-      //   if (create_tx_err) {
-      //     console.log(create_tx_err);
-      //     toast.error("Something went wrong.Plz try after sometime.", {
-      //       position: toast.POSITION.TOP_RIGHT,
-      //     });
-      //   }
-      //   if (create_tx_res) {
-      //     let checkout_url = create_tx_res?.data?.create_payment?.checkout_url;
-      //     navigate("/payment", {
-      //       state: {
-      //         url: checkout_url,
-      //       },
-      //     });
-      //   }
     }
     set_checkout_loading(false);
   };
@@ -192,7 +171,7 @@ const Checkout = () => {
       return <Icon icon="logos:mastercard" height={40} width={40} />;
     if (type === "visa")
       return <Icon icon="logos:visa" height={40} width={40} />;
-      if (type === "discover")
+    if (type === "discover")
       return <Icon icon="logos:discover" height={40} width={40} />;
   };
   const removeFromCart = async (itemID: any) => {
@@ -290,6 +269,7 @@ const Checkout = () => {
                                 </TableCell>
                                 <TableCell>
                                   <img
+                                  crossOrigin="anonymous"
                                     loading="lazy"
                                     width="50"
                                     height="25"
@@ -299,7 +279,7 @@ const Checkout = () => {
                                 </TableCell>
                                 <TableCell>
                                   <Typography variant="subtitle2" noWrap>
-                                    {card?.itemId?.price}
+                                  $ {card?.itemId?.price}
                                   </Typography>
                                 </TableCell>
                                 <TableCell sx={{ cursor: "pointer" }}>

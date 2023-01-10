@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableRow,
@@ -17,6 +18,7 @@ import moment from "moment";
 import { Icon } from "@iconify/react";
 import EmptyOrderImg from "../../images/orderimg.png";
 import UserDetails from "../UserDetails";
+import OrderDetails from "./OrderDetails";
 
 const TABLE_HEAD = [
   { id: "id", label: "Order Id", alignRight: false },
@@ -58,6 +60,18 @@ const UserOrders = (props: any) => {
         />
       );
   };
+
+  const [orderDetail, setOrderDetail] = useState<any>();
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const orderDetails = (order: any) => {
+    handleOpen();
+    setOrderDetail(order);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 5 }}>
       <Card sx={{ borderRadius: 5, p: 3 }}>
@@ -97,7 +111,11 @@ const UserOrders = (props: any) => {
                   <TableBody>
                     {props?.userOrders.map((order: any) => (
                       <>
-                        <TableRow key={order._id}>
+                        <TableRow
+                          sx={{cursor:'pointer'}}
+                          key={order._id}
+                          onClick={() => orderDetails(order)}
+                        >
                           <TableCell sx={{}}>
                             <Typography
                               variant="subtitle2"
@@ -153,7 +171,7 @@ const UserOrders = (props: any) => {
                               noWrap
                               sx={{ fontSize: "medium" }}
                             >
-                              ฿ {order?.totalPrice}
+                              $ {order?.totalPrice}
                             </Typography>
                           </TableCell>
                           <TableCell sx={{}}>
@@ -206,6 +224,11 @@ const UserOrders = (props: any) => {
           </>
         )}
       </Card>
+      <OrderDetails
+        open={open}
+        handleClose={handleClose}
+        orderDetail={orderDetail}
+      />
     </Container>
   );
 };

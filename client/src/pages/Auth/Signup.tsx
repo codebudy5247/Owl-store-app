@@ -183,13 +183,13 @@ const Signup = () => {
               >
                 Login
               </Link>
-              <Link
+              {/* <Link
                 variant="subtitle2"
                 onClick={() => navigate("/register-seller")}
                 sx={{ cursor: "pointer",ml:2 }}
               >
                Signup as a seller
-              </Link>
+              </Link> */}
             </Typography>
           </Box>
           <Box

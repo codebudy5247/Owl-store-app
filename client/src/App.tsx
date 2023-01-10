@@ -14,8 +14,9 @@ import Seller from "./guard/Seller";
 import Checkout from "./pages/Dashboard/Checkout";
 import Wallet from "./pages/Dashboard/Wallet";
 import Payment from "./pages/Dashboard/Payment";
-import RedirectPage from "./components/layouts/RedirectPage";
-
+import News from "./pages/Dashboard/News";
+import Tickets from "./pages/Dashboard/Tickets";
+import Rules from "./pages/Dashboard/Rules";
 function App() {
   return (
     <div className="App">
@@ -30,6 +31,9 @@ function App() {
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/payment" element={<Payment />} />
+              <Route path="/news" element={<News />} />
+              <Route path="/tickets" element={<Tickets />} />
+              <Route path="/rules" element={<Rules />} />
             </Route>
             <Route path="/" element={<Seller />}>
               <Route

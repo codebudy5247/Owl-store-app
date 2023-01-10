@@ -5,6 +5,7 @@ const cors = require("cors");
 const logger = require("morgan");
 const path = require("path");
 const connectDB = require("./config/dbConnect");
+const helmet = require("helmet")
 
 //Logger
 app.use(logger("dev"));
@@ -19,21 +20,22 @@ app.use(cors());
 //.env
 dotenv.config();
 
-// app.use('/', express.static(path.join(__dirname, 'public')))
-// app.use('/', require('./ROUTES/root'))
-
-// app.get("/", (req, res) => {
-//   res.json({ msg: "Owl Store! Ecommerce" });
-// });
-
-
 //Routes
 app.use("/api/auth", require("./routes/authRoute")); //Auth Api
 app.use("/api/user", require("./routes/userRoute")); //User Api
 app.use("/api/card", require("./routes/cardRoute")); //Card Api
 app.use("/api/order", require("./routes/orderRoutes")); //Order Api
+app.use("/api/withdraw", require("./routes/withdrawalRoute")); //withdraw Api
 app.use("/api/billing", require("./routes/billingRoute")); //Billing Api
 app.use("/api/admin", require("./routes/adminRoute")); //Admin Api
+app.use("/api/news", require("./routes/newsRoute")); //News Api
+app.use("/api/rules", require("./routes/rulesRoute")); //Rules Api
+app.use("/api/ticket", require("./routes/ticketRoute")); //ticket Api
+app.use("/api/answer", require("./routes/answerRoute")); //answer Api
+
+
+
+
 
 //Connect to DB.
 connectDB();

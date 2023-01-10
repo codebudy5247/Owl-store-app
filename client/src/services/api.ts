@@ -141,7 +141,7 @@ export async function getUser() {
 }
 
 //Get user by ID
-export async function getUserByID(userId:string) {
+export async function getUserByID(userId: string) {
   try {
     let token: any = localStorage.getItem("authToken");
     const axiosConfig: axios.AxiosRequestConfig = {
@@ -440,7 +440,7 @@ export async function getOrdersUsers() {
 }
 
 //Get seller orders
-export async function getOrdersSellers(sellerId:string) {
+export async function getOrdersSellers(sellerId: string) {
   try {
     let token: any = localStorage.getItem("authToken");
     const axiosConfig: axios.AxiosRequestConfig = {
@@ -471,10 +471,10 @@ export async function createDeposit(
       url: `${apiURL}/billing`,
       headers: { Authorization: "Bearer " + token },
       data: {
-        amount:amount,
-        cur2:payWith,
-        buyers_email:buyersEmail,
-        buyers_name:buyersName
+        amount: amount,
+        cur2: payWith,
+        buyers_email: buyersEmail,
+        buyers_name: buyersName,
       },
     };
     const response = await axios.default.request(axiosConfig);
@@ -504,16 +504,16 @@ export async function getBillingsUsers() {
   }
 }
 //Get Tx info
-export async function getTxInfo(txId:string) {
+export async function getTxInfo(txId: string) {
   try {
     let token: any = localStorage.getItem("authToken");
     const axiosConfig: axios.AxiosRequestConfig = {
       method: "post",
       url: `${apiURL}/billing/tx-info`,
       headers: { Authorization: "Bearer " + token },
-      data:{
-        txID:txId
-      }
+      data: {
+        txID: txId,
+      },
     };
     const response = await axios.default.request(axiosConfig);
     const normalizedResponse = normalizeServerResponse(response);
@@ -525,18 +525,122 @@ export async function getTxInfo(txId:string) {
 }
 
 //Deduct amount after checkout
-export async function deductAmount(userId:string,amount:string,orderId:string){
+export async function deductAmount(
+  userId: string,
+  amount: string,
+  orderId: string
+) {
   try {
     let token: any = localStorage.getItem("authToken");
     const axiosConfig: axios.AxiosRequestConfig = {
       method: "post",
       url: `${apiURL}/admin/deduct-money`,
       headers: { Authorization: "Bearer " + token },
-      data:{
-        amount:amount,
-        userId:userId,
-        orderId:orderId
-      }
+      data: {
+        amount: amount,
+        userId: userId,
+        orderId: orderId,
+      },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//Get all news
+export async function getNews() {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "get",
+      url: `${apiURL}/news`,
+      headers: { Authorization: "Bearer " + token },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//Get all rules
+export async function getRules() {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "get",
+      url: `${apiURL}/rules`,
+      headers: { Authorization: "Bearer " + token },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//create Ticket
+export async function createTicket(title: string, content: string) {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "post",
+      url: `${apiURL}/ticket`,
+      headers: { Authorization: "Bearer " + token },
+      data: {
+        title: title,
+        content: content,
+      },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//Get user Tickets
+export async function getTickets() {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "get",
+      url: `${apiURL}/ticket/user-tickets`,
+      headers: { Authorization: "Bearer " + token },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//Create withdrawal Request
+
+export async function createwithdrawalRequest(amount: string, orderId: string,paymentAddress:string) {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "post",
+      url: `${apiURL}/withdraw`,
+      headers: { Authorization: "Bearer " + token },
+      data: {
+        amount: amount,
+        orderId: orderId,
+        paymentAddress:paymentAddress
+      },
     };
     const response = await axios.default.request(axiosConfig);
     const normalizedResponse = normalizeServerResponse(response);

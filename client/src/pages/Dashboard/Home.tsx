@@ -54,8 +54,9 @@ const Home = () => {
         <></>
       )}
 
-      {USER_ROLE === "ROLE_SELLER" && approvedByAdmin.toString() === "false" ? (
+      {/* {USER_ROLE === "ROLE_SELLER" && approvedByAdmin?.toString() === "false" ? (
         <>
+
           <Box
             sx={{
               display: "flex",
@@ -86,7 +87,7 @@ const Home = () => {
         </>
       ) : (
         <></>
-      )}
+      )} */}
 
       {approvedByAdmin.toString() === "true" ? (
         <>

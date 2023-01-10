@@ -204,6 +204,7 @@ const BulkAddCards = () => {
                       </TableCell>
                       <TableCell>
                         <img
+                          crossOrigin="anonymous"
                           loading="lazy"
                           width="50"
                           height="25"

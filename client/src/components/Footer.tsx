@@ -17,7 +17,7 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
 
 const Footer = () => {
   const navigate = useNavigate();
-  const user_role: any = localStorage.getItem("userRole");
+  const approvedByAdmin: any = localStorage.getItem("approvedByAdmin");
   return (
     <Box
       sx={{
@@ -74,12 +74,12 @@ const Footer = () => {
           <Box>
             <Typography variant="subtitle2">2022 © Owl Store</Typography>
           </Box>
-          {user_role === "ROLE_SELLER" ? (
+          {approvedByAdmin.toString() === "true" ? (
               <></>
             ) : (
               <Box sx={{ mt: "12px" }}>
                 <ColorButton
-                  onClick={() => navigate("/register-seller")}
+                  onClick={() => navigate("/tickets")}
                   variant="contained"
                 >
                   Become a seller on OwlStore

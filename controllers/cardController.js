@@ -25,50 +25,6 @@ exports.getAllCards = async (req, res) => {
   try {
     const cards = await Card.find({});
     res.status(200).json(cards);
-
-    //   const page = parseInt(req.query.page) - 1 || 0;
-    //   const limit = parseInt(req.query.limit) || 10;
-    //   const search = req.query.search || "";
-    //   let sort = req.query.sort || "base";
-    //   let extraField = req.query.genre || "All";
-
-    //   const extraFieldOptions = ["SSN", "email", "MMN", "DOB", "phone", "VBV"];
-
-    //   extraField === "All"
-    //     ? (extraField = [...extraFieldOptions])
-    //     : (extraField = req.query.extraField.split(","));
-
-    //   req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
-
-    //   let sortBy = {};
-    //   if (sort[1]) {
-    //     sortBy[sort[0]] = sort[1];
-    //   } else {
-    //     sortBy[sort[0]] = "asc";
-    //   }
-
-    //   const cards = await Card.find({
-    //     class: { $regex: search, $options: "i" },
-    //   })
-    //     .where("extraField")
-    //     .in([...extraField])
-    //     .sort(sortBy)
-    //     .skip(page * limit)
-    //     .limit(limit);
-
-    //   const total = await Card.countDocuments({
-    //     extraField: { $in: [...extraField] },
-    //     class: { $regex: search, $options: "i" },
-    //   });
-    //   const response = {
-    //     error: false,
-    //     total,
-    //     page: page + 1,
-    //     limit,
-    //     extraField: extraFieldOptions,
-    //     cards,
-    //   };
-    //   res.status(200).json(response);
   } catch (error) {
     res.status(500).json({
       success: false,

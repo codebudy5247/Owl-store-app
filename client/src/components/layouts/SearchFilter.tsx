@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Container,
@@ -6,7 +6,6 @@ import {
   Typography,
   Stack,
   TextField,
-  Chip,
   Autocomplete,
   InputLabel,
   getSpeedDialActionUtilityClass,
@@ -31,6 +30,8 @@ import Button, { ButtonProps } from "@mui/material/Button";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { toast } from "react-toastify";
 import * as Api from "../../services/api";
+import Chip from '@mui/material/Chip';
+
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#EE2B70",
@@ -40,8 +41,6 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
     color: "white",
   },
 }));
-
-
 
 const classOption = [
   {
@@ -97,8 +96,6 @@ const SearchFilter = (props: any) => {
   const [cartItems, setCartItems] = useState<any>();
 
   const [disabled, setDisabled] = useState(false);
-
-  
 
   //Check item is present or not in the cart.
   function checkItem(arr: any, item_id: string) {
@@ -382,6 +379,7 @@ const SearchFilter = (props: any) => {
                         </TableCell>
                         <TableCell>
                           <img
+                            crossOrigin="anonymous"
                             loading="lazy"
                             width="50"
                             height="25"
@@ -401,17 +399,25 @@ const SearchFilter = (props: any) => {
                         </TableCell>
                         <TableCell>
                           <Typography variant="subtitle2" noWrap>
-                            {card?.price}
+                            $ {card?.price}
                           </Typography>
                         </TableCell>
                         <TableCell sx={{ cursor: "pointer" }}>
-                    <ColorButton
-                      variant="contained"
-                      onClick={() => addToCart(card?._id)}
-                    >
-                      <AddShoppingCartIcon />
-                    </ColorButton>
-                  </TableCell>
+                          {card?.avaibility === "Sold" ? (
+                            <>
+                              <TableCell>
+                                <Chip label={card?.avaibility} color="success" />
+                              </TableCell>
+                            </>
+                          ) : (
+                            <ColorButton
+                              variant="contained"
+                              onClick={() => addToCart(card?._id)}
+                            >
+                              <AddShoppingCartIcon />
+                            </ColorButton>
+                          )}
+                        </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>

@@ -1,12 +1,12 @@
 export const _salesOverview = [
     {
         label:'Sales Total',
-        value:'100+',
+        value:'$100+',
         percent:'89'
     },
     {
         label:'Monthly Sales',
-        value:'150+',
+        value:'$150+',
         percent:'56'
     },
     {

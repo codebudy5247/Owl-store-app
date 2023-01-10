@@ -11,10 +11,9 @@ const BillingSchema = new mongoose.Schema(
     status: {
       type: String,
     },
-    paymentApproved: {
-      type: String,
-      enum: ["pending", "approved", "decline"],
-      default: "pending",
+    paidByAdmin: {
+      type: Boolean,
+      default: "false",
     },
     txId: {
       type: String,
