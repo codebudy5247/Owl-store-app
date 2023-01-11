@@ -5,6 +5,7 @@ const Order = require("../models/orderModel");
 const Billing = require("../models/billingModel");
 const Card = require("../models/cardModel");
 const SoldCard = require("../models/SoldCard");
+const Withdraw = require("../models/withdrawalModel")
 
 //Register Admin
 exports.registerAdmin = async (req, res) => {
@@ -114,7 +115,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-//Payment approved / deposit balance
+//Payment approved / deposit balance   //TODO test required
 exports.depositMoney = async (req, res) => {
   try {
     const { amount, userId, billingId } = req.body;
@@ -250,6 +251,7 @@ exports.deleteBilling = async (req, res) => {
 
 //withdrawal request
 //Update Status
+
 //Delete
 
 //News

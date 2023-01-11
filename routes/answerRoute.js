@@ -32,4 +32,14 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const answer = await answerModel.findById(req.params.id);
+    if (!answer) return res.status(404).json({ msg: "Answer not found" });
+    res.status(200).json(answer);
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+});
+
 module.exports = router;

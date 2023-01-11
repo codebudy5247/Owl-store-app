@@ -91,6 +91,8 @@ const CreateTicketModel = (props: any) => {
                 // disabled
               />
               <TextField
+              multiline
+              rows={4}
                 required={true}
                 fullWidth
                 id="content"
