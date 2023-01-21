@@ -39,7 +39,7 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).json({
-      message: error,
+      message: err,
     });
   }
 });
