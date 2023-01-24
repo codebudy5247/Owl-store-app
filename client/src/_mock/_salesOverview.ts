@@ -15,7 +15,7 @@ export const _salesOverview = [
         percent:'72'
     },
     {
-        label:'Total Cards',
+        label:'Sold Cards',
         value:'278+',
         percent:'72'
     },

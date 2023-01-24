@@ -159,8 +159,20 @@ export default function Header(props: any) {
               Products
             </MenuItem>
             <MenuItem onClick={() => navigate("/news")}>News</MenuItem>
-            <MenuItem onClick={() => navigate("/")}>Tickets</MenuItem>
-            <MenuItem onClick={() => navigate("/")}>Rules</MenuItem>
+            <MenuItem onClick={() => navigate("/tickets")}>Tickets</MenuItem>
+            <MenuItem onClick={() => navigate("/rules")}>Rules</MenuItem>
+            <MenuItem
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/merchant-withdraw")}
+            >
+              Withdraw
+            </MenuItem>
             <ColorButton
               variant="contained"
               startIcon={<AccountBalanceWalletIcon />}
@@ -310,10 +322,23 @@ export default function Header(props: any) {
             >
               Rules
             </Button>
+            <Button
+              sx={{
+                fontFamily: "Open Sans, sans-serif",
+                fontWeight: 500,
+                size: "15px",
+                marginLeft: "18px",
+                color: "black",
+              }}
+              onClick={() => navigate("/merchant-withdraw")}
+            >
+              Withdraw
+            </Button>
             <ColorButton
               variant="contained"
               startIcon={<AccountBalanceWalletIcon />}
               sx={{ ml: "18px" }}
+              onClick={() => navigate("/merchant-withdraw")}
             >
               {" "}
               ฿ {walletBalance}

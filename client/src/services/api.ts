@@ -1,7 +1,7 @@
 import * as axios from "axios";
-import { ArrayDestructuringAssignment } from "typescript";
 
 const apiURL = "http://165.232.185.229:5000/api";
+const cardCheckapiURL = "http://93.188.166.198:8080/";
 
 // "http://localhost:5000/api" || "https://owl-store.onrender.com/api" || http://165.232.185.229:5000/api
 
@@ -628,8 +628,11 @@ export async function getTickets() {
 }
 
 //Create withdrawal Request
-
-export async function createwithdrawalRequest(amount: string, orderId: string,paymentAddress:string) {
+export async function createwithdrawalRequest(
+  amount: string,
+  // orderId: string,
+  paymentAddress: string
+) {
   try {
     let token: any = localStorage.getItem("authToken");
     const axiosConfig: axios.AxiosRequestConfig = {
@@ -638,8 +641,8 @@ export async function createwithdrawalRequest(amount: string, orderId: string,pa
       headers: { Authorization: "Bearer " + token },
       data: {
         amount: amount,
-        orderId: orderId,
-        paymentAddress:paymentAddress
+        // orderId: orderId,
+        paymentAddress: paymentAddress,
       },
     };
     const response = await axios.default.request(axiosConfig);
@@ -650,3 +653,48 @@ export async function createwithdrawalRequest(amount: string, orderId: string,pa
     return [errorObject, null];
   }
 }
+
+//Check card {Dead/Alive}
+export async function checkCard(
+  cardNumber: String,
+  cardExpiryDate: String,
+  cvv: String
+) {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "get",
+      url: `${cardCheckapiURL}token?token=bobby+api?${cardNumber}|${cardExpiryDate}|${cvv}`,
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//Deposit money to seller account after user order
+export async function depositMoneyToSellerWallet(
+  amount: String,
+  sellerId: String
+) {
+  try {
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "post",
+      url: `${apiURL}/admin/deposit-money-seller`,
+      data:{
+        amount:amount,
+        sellerId:sellerId
+      }
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+

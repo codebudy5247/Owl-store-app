@@ -10,7 +10,8 @@ const {
   getOrders,
   getBillings,
   deleteUser,
-  updateOrder
+  updateOrder,
+  depositMoneyToSellerWallet
 } = require("../controllers/adminController");
 
 router.post("/register-admin", registerAdmin);
@@ -23,5 +24,6 @@ router.get("/orders", getOrders);
 router.get("/billings", getBillings);
 router.delete('/delete-user/:id',deleteUser)
 router.post("/update-order", updateOrder);
+router.post("/deposit-money-seller",depositMoneyToSellerWallet)
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const Order = require("../models/orderModel");
 const Coinpayments = require("coinpayments");
+const User = require("../models/userModel") 
 
 const client = new Coinpayments({
   key: process.env.PUBLIC_KEY,
@@ -19,10 +20,24 @@ exports.createOrder = async (req, res) => {
   });
   try {
     const order = await newOrder.save();
+
+    //deposit money to seller account
+    let depositPercent = 80;
+    let amountToDeposit = (depositPercent / 100) * order.totalPrice;
+    let recipient = await User.findById(order.seller);
+    let updateFields = {};
+    let moneyToDeposit = recipient.walletBalance + amountToDeposit * 1;
+    updateFields.walletBalance = moneyToDeposit;
+    let user = await User.findOneAndUpdate(
+      { _id: recipient._id },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+
     res.status(201).send({ message: "New Order Created", order });
-    let user1 = req.user
-    if(user1){
-      user1.clearCart()
+    let user1 = req.user;
+    if (user1) {
+      user1.clearCart();
     }
   } catch (error) {
     console.log(error);
@@ -95,9 +110,9 @@ exports.createTx = async (req, res) => {
       { $set: updateFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-    let user = req.user
-    if(user){
-      user.clearCart()
+    let user = req.user;
+    if (user) {
+      user.clearCart();
     }
     res.status(201).send({ message: "New Tx Created", create_payment, order });
   } catch (error) {

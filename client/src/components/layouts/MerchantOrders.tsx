@@ -126,7 +126,7 @@ const UserOrders = (props: any) => {
     const [err, res] = await Api.createwithdrawalRequest(
       orderAmn,
       orderID,
-      paymentAddress
+      // paymentAddress
     );
     if (err) {
       toast.error(err?.data, {
@@ -281,7 +281,7 @@ const UserOrders = (props: any) => {
                               )}
                             </Box>
                           </TableCell>
-                          {order?.withdrawalRequestCreated.toString() ===
+                          {/* {order?.withdrawalRequestCreated.toString() ===
                           "true" ? (
                             <TableCell>
                               <ColorButton
@@ -305,7 +305,7 @@ const UserOrders = (props: any) => {
                                 Create withdrawal Request
                               </ColorButton>
                             </TableCell>
-                          )}
+                          )} */}
                         </TableRow>
                       </>
                     ))}

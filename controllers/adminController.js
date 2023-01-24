@@ -5,7 +5,7 @@ const Order = require("../models/orderModel");
 const Billing = require("../models/billingModel");
 const Card = require("../models/cardModel");
 const SoldCard = require("../models/SoldCard");
-const Withdraw = require("../models/withdrawalModel")
+const Withdraw = require("../models/withdrawalModel");
 
 //Register Admin
 exports.registerAdmin = async (req, res) => {
@@ -115,6 +115,37 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+// ============================================== SELLER PAYMENT/WITHDRAWAL ===============================================================
+
+//Deposit money to seller account after user order
+exports.depositMoneyToSellerWallet = async (req, res) => {
+  try {
+    const { amount, sellerId } = req.body;
+    let recipient = await User.findById(sellerId);
+    let updateFields = {};
+    let moneyToDeposit = recipient.walletBalance + amount * 1;
+    updateFields.walletBalance = moneyToDeposit;
+    let user = await User.findOneAndUpdate(
+      { _id: sellerId },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res
+      .status(200)
+      .send({ message: `Deposited ${amount}$ to ${user?.username}` });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//Deduct money from seller wallet after withdrawal req approved.
+exports.deductMoneyFromSellerWallet = async (req, res) => {
+  try {
+  } catch (error) {
+
+  }
+};
+
 //Payment approved / deposit balance   //TODO test required
 exports.depositMoney = async (req, res) => {
   try {
@@ -133,7 +164,7 @@ exports.depositMoney = async (req, res) => {
     updateBillingFields.paidByAdmin = true;
     let billing = await Billing.findByIdAndUpdate(
       { _id: billingId },
-      { $set: updateFields },
+      { $set: updateBillingFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
     res
@@ -194,11 +225,11 @@ exports.deductMoney = async (req, res) => {
     });
     await Promise.all(createSoldCard);
 
-    const deleteSoldCards = products.items.map(async (obj) =>{
+    const deleteSoldCards = products.items.map(async (obj) => {
       console.log(obj);
       await Card.findByIdAndRemove(obj.item._id);
-    })
-    await Promise.all(deleteSoldCards)
+    });
+    await Promise.all(deleteSoldCards);
     res.status(200).send({ message: "success!", order });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -231,9 +262,7 @@ exports.updateOrder = async (req, res) => {
   }
 };
 //Delete order
-exports.deleteOrder = async (req, res) => {
-
-};
+exports.deleteOrder = async (req, res) => {};
 
 //Get all billings
 exports.getBillings = async (req, res) => {
@@ -245,9 +274,7 @@ exports.getBillings = async (req, res) => {
   }
 };
 //Delete Billing
-exports.deleteBilling = async (req, res) => {
-
-};
+exports.deleteBilling = async (req, res) => {};
 
 //withdrawal request
 //Update Status

@@ -98,7 +98,7 @@ const SearchFilter = (props: any) => {
 
   //Check item is present or not in the cart.
   function checkItem(arr: any, item_id: string) {
-    const found = arr?.some((el: any) => el.itemId._id === item_id);
+    const found = arr?.some((el: any) => el?.itemId?._id === item_id);
     if (found) return true;
   }
 

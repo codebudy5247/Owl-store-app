@@ -7,7 +7,6 @@ import {
   Typography,
   Table,
   TableRow,
-  Checkbox,
   TableBody,
   TableCell,
   TableContainer,
@@ -15,11 +14,6 @@ import {
   TableSortLabel,
   CardContent,
 } from "@mui/material";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import React, { useState, useEffect } from "react";
 import Header from "../../components/layouts/Header";
 import Navbar from "../../components/Navbar";
@@ -37,6 +31,9 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import PaymentConfirmation from "../../components/layouts/PaymentConfirmation";
+import CachedIcon from "@mui/icons-material/Cached";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#EE2B70",
@@ -53,6 +50,7 @@ const TABLE_HEAD = [
   { id: "zip", label: "Zip", alignRight: false },
   { id: "country", label: "Country", alignRight: true },
   { id: "price", label: "Price", alignRight: true },
+  { id: "status", label: "Card Status", alignRight: true },
 ];
 
 const Assets = [
@@ -102,11 +100,11 @@ const Checkout = () => {
   const getUserCart = async () => {
     const [err, res] = await Api.getCartItems();
     if (err) {
-      console.log(err, "getCartItems err");
+      toast.error(err?.data, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
     if (res) {
-      console.log("getCartItems err", res);
-
       setTotalPrice(res?.data?.totalPrice);
       setCartItems(res?.data?.cart);
     }
@@ -115,7 +113,6 @@ const Checkout = () => {
   const getUser = async () => {
     const [user_err, user_res] = await Api.getUser();
     if (user_err) {
-      console.log(user_err);
     }
     setUser(user_res?.data);
   };
@@ -128,6 +125,7 @@ const Checkout = () => {
   }, []);
 
   const handleCheckout = async () => {
+    //Create user order
     set_checkout_loading(true);
     const [create_order_err, create_order_res] = await Api.createOrder(
       cartItems,
@@ -140,11 +138,13 @@ const Checkout = () => {
       });
     }
     setOrderId(create_order_res?.data?.order?._id);
+    // setOrder(create_order_res?.data?.order);
+
+    //Deduct money after order from user wallet
     if (
       create_order_res?.status === 201 &&
       create_order_res?.data?.order?._id
     ) {
-      //Deduct Amount from wallet
       const [deduct_amn_err, deduct_amn_res] = await Api.deductAmount(
         user._id,
         totalPrice,
@@ -159,7 +159,6 @@ const Checkout = () => {
         toast.success("Order placed!", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        handleOpen();
         navigate("/orders");
       }
     }
@@ -238,7 +237,7 @@ const Checkout = () => {
                             <>
                               <TableRow key={card?.itemId?._id}>
                                 <TableCell sx={{ display: "flex" }}>
-                                  {displayIcon(card.itemId.type)}
+                                  {displayIcon(card?.itemId?.type)}
                                   <Typography
                                     variant="subtitle2"
                                     noWrap
@@ -269,7 +268,7 @@ const Checkout = () => {
                                 </TableCell>
                                 <TableCell>
                                   <img
-                                  crossOrigin="anonymous"
+                                    crossOrigin="anonymous"
                                     loading="lazy"
                                     width="50"
                                     height="25"
@@ -279,9 +278,27 @@ const Checkout = () => {
                                 </TableCell>
                                 <TableCell>
                                   <Typography variant="subtitle2" noWrap>
-                                  $ {card?.itemId?.price}
+                                    $ {card?.itemId?.price}
                                   </Typography>
                                 </TableCell>
+
+                                <TableCell>
+                                  <CheckCard
+                                    cardNumber={card?.itemId?.cardNumber}
+                                    expiryDate={card?.itemId?.expiryDate}
+                                    cvv={card?.itemId?.cvv}
+                                  />
+                                </TableCell>
+
+                                {/* <TableCell>
+                                  <ColorButton
+                                    variant="contained"
+                                    startIcon={<CachedIcon />}
+                                  >
+                                    Recheck
+                                  </ColorButton>
+                                </TableCell> */}
+
                                 <TableCell sx={{ cursor: "pointer" }}>
                                   <ColorButton
                                     variant="contained"
@@ -429,6 +446,13 @@ const Checkout = () => {
                 Check Out
               </ColorButton>
             )}
+
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: "bold", mt: 1, color: "#EE2B70" }}
+            >
+              * Please check card status i.e LIVE or DECLINED before proceed.
+            </Typography>
           </Grid>
         </Grid>
         <PaymentConfirmation
@@ -445,3 +469,102 @@ const Checkout = () => {
 };
 
 export default Checkout;
+
+const CheckCard = (props: any) => {
+  const [loading, setLoading] = useState(false);
+  const [cardStatus, setCardStatus] = useState<any>();
+
+  let expiry_date = moment(props?.expiryDate).format("DD/YY");
+
+  //Check card validation {Dead/Alive}
+  async function checkCardValidation() {
+    setLoading(true);
+    const [err, res] = await Api.checkCard(
+      props?.cardNumber,
+      expiry_date,
+      props?.cvv
+    );
+    if (err) {
+      console.log(err);
+    }
+    if (res) {
+      if (
+        res?.data === `'str' object has no attribute 'decode'` ||
+        res?.data === `INVALID RESPONSE❌ Please try again!`
+      ) {
+        setCardStatus(res?.data);
+      } else {
+        let resStr = res?.data?.split(" ");
+        setCardStatus(resStr[0]);
+      }
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    const checkCard = async () => {
+      await checkCardValidation();
+    };
+    checkCard();
+  }, [props?.cartItems]);
+
+  const onClickHandler = async () => {
+    await checkCardValidation();
+  };
+  return (
+    <>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          {cardStatus === "DECLINED" ? (
+            <>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontSize: "medium",
+                  color: "red",
+                  fontWeight: "bold",
+                  // mb: 1,
+                }}
+              >
+                {/* <CancelIcon />  */}
+                {cardStatus}
+              </Typography>
+            </>
+          ) : (
+            <></>
+          )}
+          {cardStatus === "LIVE" ? (
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontSize: "medium",
+                color: "green",
+                fontWeight: "bold",
+                // mb: 1,
+              }}
+            >
+              {/* <CheckCircleIcon />  */}
+              {cardStatus}
+            </Typography>
+          ) : (
+            <></>
+          )}
+          {cardStatus === `'str' object has no attribute 'decode'` ||
+          cardStatus === `INVALID RESPONSE❌ Please try again!` ? (
+            <ColorButton
+              variant="contained"
+              startIcon={<CachedIcon />}
+              onClick={onClickHandler}
+            >
+              Recheck
+            </ColorButton>
+          ) : (
+            <></>
+          )}
+        </>
+      )}
+    </>
+  );
+};

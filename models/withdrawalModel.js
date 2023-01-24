@@ -7,10 +7,6 @@ const WithdrawalSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    orderId: {
-      type: String,
-      required: true,
-    },
     paymentAddress: {
       type: String,
       required: true,
