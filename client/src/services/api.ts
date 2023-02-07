@@ -2,6 +2,7 @@ import * as axios from "axios";
 
 const apiURL = "http://165.232.185.229:5000/api";
 const cardCheckapiURL = "http://93.188.166.198:8080/";
+const cardInfoApiUrl = "https://lookup.binlist.net";
 
 // "http://localhost:5000/api" || "https://owl-store.onrender.com/api" || http://165.232.185.229:5000/api
 
@@ -16,14 +17,13 @@ export interface AddCardRequestPayload {
   state: string;
   city: string;
   zip: string;
-  mobile: string;
+  mobile: Number;
   cardNumber: string;
   expiryDate: string;
   cvv: string;
-  socialSecurityNumber: string;
-  drivingLicenceNumber: string;
+  socialSecurityNumber?: string;
+  drivingLicenceNumber?: string;
   level: string;
-  class?: string;
   price: string;
   bankName: string;
   type: string;
@@ -180,7 +180,6 @@ export async function createCard(payload: AddCardRequestPayload) {
           phoneNo: payload.mobile,
         },
         level: payload.level,
-        class: payload.class,
         price: payload.price,
         bankName: payload.bankName,
         type: payload.type,
@@ -684,10 +683,10 @@ export async function depositMoneyToSellerWallet(
     const axiosConfig: axios.AxiosRequestConfig = {
       method: "post",
       url: `${apiURL}/admin/deposit-money-seller`,
-      data:{
-        amount:amount,
-        sellerId:sellerId
-      }
+      data: {
+        amount: amount,
+        sellerId: sellerId,
+      },
     };
     const response = await axios.default.request(axiosConfig);
     const normalizedResponse = normalizeServerResponse(response);
@@ -698,3 +697,18 @@ export async function depositMoneyToSellerWallet(
   }
 }
 
+//Get card info
+export async function cardInfo(cardNumber: String) {
+  try {
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "get",
+      url: `${cardInfoApiUrl}/${cardNumber}`,
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}

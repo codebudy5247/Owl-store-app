@@ -196,6 +196,9 @@ exports.deductMoney = async (req, res) => {
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
     let products = await Order.findById(orderId);
+    
+    
+
     // let updateProductFields = {};
     // updateProductFields.avaibility = "Sold";
     // const promises = products?.items.map(
@@ -226,7 +229,6 @@ exports.deductMoney = async (req, res) => {
     await Promise.all(createSoldCard);
 
     const deleteSoldCards = products.items.map(async (obj) => {
-      console.log(obj);
       await Card.findByIdAndRemove(obj.item._id);
     });
     await Promise.all(deleteSoldCards);

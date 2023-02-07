@@ -41,8 +41,8 @@ const TABLE_HEAD = [
   { id: "state", label: "State", alignRight: true },
   { id: "country", label: "Country", alignRight: true },
   { id: "lavel", label: "Lavel", alignRight: true },
-  { id: "class", label: "Class", alignRight: true },
-  // { id: "extra", label: "Extra", alignRight: true },
+  { id: "class", label: "Bank", alignRight: true },
+  { id: "extra", label: "Type", alignRight: true },
   { id: "price", label: "Price", alignRight: true },
   { id: "availabilitystatus", label: "Availability Status", alignRight: true }
 ];
@@ -177,7 +177,12 @@ const TotalCards = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="subtitle2" noWrap>
-                          {card?.class}
+                          {card?.bankName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle2" noWrap>
+                          {card?.type}
                         </Typography>
                       </TableCell>
                       <TableCell>

@@ -31,9 +31,6 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import PaymentConfirmation from "../../components/layouts/PaymentConfirmation";
-import CachedIcon from "@mui/icons-material/Cached";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#EE2B70",
@@ -50,7 +47,7 @@ const TABLE_HEAD = [
   { id: "zip", label: "Zip", alignRight: false },
   { id: "country", label: "Country", alignRight: true },
   { id: "price", label: "Price", alignRight: true },
-  { id: "status", label: "Card Status", alignRight: true },
+  // { id: "status", label: "Card Status", alignRight: true },
 ];
 
 const Assets = [
@@ -138,8 +135,6 @@ const Checkout = () => {
       });
     }
     setOrderId(create_order_res?.data?.order?._id);
-    // setOrder(create_order_res?.data?.order);
-
     //Deduct money after order from user wallet
     if (
       create_order_res?.status === 201 &&
@@ -283,11 +278,11 @@ const Checkout = () => {
                                 </TableCell>
 
                                 <TableCell>
-                                  <CheckCard
+                                  {/* <CheckCard
                                     cardNumber={card?.itemId?.cardNumber}
                                     expiryDate={card?.itemId?.expiryDate}
                                     cvv={card?.itemId?.cvv}
-                                  />
+                                  /> */}
                                 </TableCell>
 
                                 {/* <TableCell>
@@ -447,12 +442,12 @@ const Checkout = () => {
               </ColorButton>
             )}
 
-            <Typography
+            {/* <Typography
               variant="subtitle2"
               sx={{ fontWeight: "bold", mt: 1, color: "#EE2B70" }}
             >
               * Please check card status i.e LIVE or DECLINED before proceed.
-            </Typography>
+            </Typography> */}
           </Grid>
         </Grid>
         <PaymentConfirmation
@@ -469,102 +464,3 @@ const Checkout = () => {
 };
 
 export default Checkout;
-
-const CheckCard = (props: any) => {
-  const [loading, setLoading] = useState(false);
-  const [cardStatus, setCardStatus] = useState<any>();
-
-  let expiry_date = moment(props?.expiryDate).format("DD/YY");
-
-  //Check card validation {Dead/Alive}
-  async function checkCardValidation() {
-    setLoading(true);
-    const [err, res] = await Api.checkCard(
-      props?.cardNumber,
-      expiry_date,
-      props?.cvv
-    );
-    if (err) {
-      console.log(err);
-    }
-    if (res) {
-      if (
-        res?.data === `'str' object has no attribute 'decode'` ||
-        res?.data === `INVALID RESPONSE❌ Please try again!`
-      ) {
-        setCardStatus(res?.data);
-      } else {
-        let resStr = res?.data?.split(" ");
-        setCardStatus(resStr[0]);
-      }
-    }
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    const checkCard = async () => {
-      await checkCardValidation();
-    };
-    checkCard();
-  }, [props?.cartItems]);
-
-  const onClickHandler = async () => {
-    await checkCardValidation();
-  };
-  return (
-    <>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <>
-          {cardStatus === "DECLINED" ? (
-            <>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  fontSize: "medium",
-                  color: "red",
-                  fontWeight: "bold",
-                  // mb: 1,
-                }}
-              >
-                {/* <CancelIcon />  */}
-                {cardStatus}
-              </Typography>
-            </>
-          ) : (
-            <></>
-          )}
-          {cardStatus === "LIVE" ? (
-            <Typography
-              variant="subtitle2"
-              sx={{
-                fontSize: "medium",
-                color: "green",
-                fontWeight: "bold",
-                // mb: 1,
-              }}
-            >
-              {/* <CheckCircleIcon />  */}
-              {cardStatus}
-            </Typography>
-          ) : (
-            <></>
-          )}
-          {cardStatus === `'str' object has no attribute 'decode'` ||
-          cardStatus === `INVALID RESPONSE❌ Please try again!` ? (
-            <ColorButton
-              variant="contained"
-              startIcon={<CachedIcon />}
-              onClick={onClickHandler}
-            >
-              Recheck
-            </ColorButton>
-          ) : (
-            <></>
-          )}
-        </>
-      )}
-    </>
-  );
-};

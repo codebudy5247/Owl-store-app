@@ -70,8 +70,8 @@ const TABLE_HEAD = [
   { id: "state", label: "State", alignRight: true },
   { id: "country", label: "Country", alignRight: true },
   { id: "lavel", label: "Level", alignRight: true },
-  { id: "class", label: "Class", alignRight: true },
-  // { id: "extra", label: "Extra", alignRight: true },
+  { id: "class", label: "Bank", alignRight: true },
+  { id: "extra", label: "Type", alignRight: true },
   { id: "price", label: "Price", alignRight: true },
   { id: "cart", label: "", alignRight: true },
 ];
@@ -393,7 +393,12 @@ const SearchFilter = (props: any) => {
                         </TableCell>
                         <TableCell>
                           <Typography variant="subtitle2" noWrap>
-                            {card?.class}
+                            {card?.bankName}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2" noWrap>
+                            {card?.type}
                           </Typography>
                         </TableCell>
                         <TableCell>

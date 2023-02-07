@@ -1,6 +1,6 @@
 const Order = require("../models/orderModel");
 const Coinpayments = require("coinpayments");
-const User = require("../models/userModel") 
+const User = require("../models/userModel");
 
 const client = new Coinpayments({
   key: process.env.PUBLIC_KEY,
@@ -33,7 +33,6 @@ exports.createOrder = async (req, res) => {
       { $set: updateFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-
     res.status(201).send({ message: "New Order Created", order });
     let user1 = req.user;
     if (user1) {
@@ -42,6 +41,17 @@ exports.createOrder = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+//Refund Money {CARD === 'DECLINED'}
+exports.refundUser = async (req, res) => {
+  try {
+    const { OrderId } = req.body;
+    let order = await Order.findById(OrderId);
+    
+
+    res.send(order);
+  } catch (error) {}
 };
 
 //get user order

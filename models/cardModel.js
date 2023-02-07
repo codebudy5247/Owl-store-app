@@ -41,10 +41,10 @@ const CardSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    class: {
-      type: String,
-      required: true,
-    },
+    // class: {
+    //   type: String,
+    //   required: true,
+    // },
     extraField: { type: [String] },
     price: {
       type: String,

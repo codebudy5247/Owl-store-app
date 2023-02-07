@@ -19,6 +19,7 @@ import { Icon } from "@iconify/react";
 import EmptyOrderImg from "../../images/orderimg.png";
 import UserDetails from "../UserDetails";
 import OrderDetails from "./OrderDetails";
+import CheckCard from "./CheckCard";
 
 const TABLE_HEAD = [
   { id: "id", label: "Order Id", alignRight: false },
@@ -60,6 +61,8 @@ const UserOrders = (props: any) => {
         />
       );
   };
+
+  console.log({props})
 
   const [orderDetail, setOrderDetail] = useState<any>();
 
@@ -112,7 +115,7 @@ const UserOrders = (props: any) => {
                     {props?.userOrders.map((order: any) => (
                       <>
                         <TableRow
-                          sx={{cursor:'pointer'}}
+                          sx={{ cursor: "pointer" }}
                           key={order._id}
                           onClick={() => orderDetails(order)}
                         >

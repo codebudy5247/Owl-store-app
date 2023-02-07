@@ -64,7 +64,7 @@ const displayIcon = (type: any) => {
 };
 
 const BulkAddCards = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [xlsxData, setXlsxData] = useState<any>();
 
@@ -92,34 +92,41 @@ const BulkAddCards = () => {
 
   const handleSubmit = async () => {
     for (const item of xlsxData) {
-      const payloadObj: AddCardRequestPayload = {
-        street: item.street,
-        country: item.country,
-        state: item.state,
-        city: item.city,
-        zip: item.zip,
-        mobile: item.phoneNo,
-        cardNumber: item.cardNumber,
-        expiryDate: item.expiryDate,
-        cvv: item.cvv,
-        socialSecurityNumber: item.socialSecurityNumber,
-        drivingLicenceNumber: item.drivingLicenceNumber,
-        level: item.level,
-        class: item.class,
-        price: item.price,
-        bankName: item.bankName,
-        type: item.type,
-      };
-
-      // call add product api
-      const [err, res] = await Api.createCard(payloadObj);
-      if (err) {
+      const [err, res] = await Api.cardInfo(
+        item.cardNumber.toString().slice(0, 6)
+      );
+      if (res) {
+        const payloadObj: AddCardRequestPayload = {
+          street: item.street,
+          country: res.data.country.name,
+          state: item.state,
+          city: item.city,
+          zip: item.zip,
+          mobile: Number(res.data.bank.phone),
+          cardNumber: item.cardNumber,
+          expiryDate: item.expiryDate,
+          cvv: item.cvv,
+          socialSecurityNumber: item.socialSecurityNumber,
+          drivingLicenceNumber: item.drivingLicenceNumber,
+          level: res.data.scheme,
+          price: item.price,
+          bankName: res.data.bank.name,
+          type: res.data.type,
+        };
+        // call add product api
+        const [error, response] = await Api.createCard(payloadObj);
+        if (error) {
+          toast.error("Something went wrong!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+        if (response) {
+          navigate("/total-cards");
+        }
+      } else {
         toast.error("Something went wrong!", {
           position: toast.POSITION.TOP_RIGHT,
         });
-      }
-      if (res) {
-        navigate("/total-cards")
       }
     }
   };
@@ -161,65 +168,66 @@ const BulkAddCards = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {xlsxData?.length >0 && xlsxData?.map((card: any) => (
-                  <>
-                    <TableRow key={card?._id}>
-                      <TableCell sx={{ display: "flex" }}>
-                        {displayIcon(card?.type)}
-                        <Typography
-                          variant="subtitle2"
-                          noWrap
-                          sx={{ ml: 1, mt: 1 }}
-                        >
-                          {card?.cardNumber}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 2 }}>
-                        <Box
-                          sx={{
-                            backgroundColor: "#FDE7EF",
-                            p: 1,
-                            textAlign: "center",
-                          }}
-                        >
-                          <Typography variant="subtitle2" noWrap>
-                            {moment(card?.base).format("MMMM YY")}
+                {xlsxData?.length > 0 &&
+                  xlsxData?.map((card: any) => (
+                    <>
+                      <TableRow key={card?._id}>
+                        <TableCell sx={{ display: "flex" }}>
+                          {displayIcon(card?.type)}
+                          <Typography
+                            variant="subtitle2"
+                            noWrap
+                            sx={{ ml: 1, mt: 1 }}
+                          >
+                            {card?.cardNumber}
                           </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="subtitle2" noWrap>
-                          {card?.zip}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="subtitle2" noWrap>
-                          {card?.city}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="subtitle2" noWrap>
-                          {card?.state}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <img
-                          crossOrigin="anonymous"
-                          loading="lazy"
-                          width="50"
-                          height="25"
-                          src={`https://countryflagsapi.com/png/${card?.country?.toLowerCase()}`}
-                          alt=""
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="subtitle2" noWrap>
-                          {card?.price}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  </>
-                ))}
+                        </TableCell>
+                        <TableCell sx={{ p: 2 }}>
+                          <Box
+                            sx={{
+                              backgroundColor: "#FDE7EF",
+                              p: 1,
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography variant="subtitle2" noWrap>
+                              {moment(card?.base).format("MMMM YY")}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2" noWrap>
+                            {card?.zip}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2" noWrap>
+                            {card?.city}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2" noWrap>
+                            {card?.state}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <img
+                            crossOrigin="anonymous"
+                            loading="lazy"
+                            width="50"
+                            height="25"
+                            src={`https://countryflagsapi.com/png/${card?.country?.toLowerCase()}`}
+                            alt=""
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="subtitle2" noWrap>
+                            {card?.price}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
