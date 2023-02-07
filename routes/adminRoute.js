@@ -11,7 +11,8 @@ const {
   getBillings,
   deleteUser,
   updateOrder,
-  depositMoneyToSellerWallet
+  depositMoneyToSellerWallet,
+  blockUser
 } = require("../controllers/adminController");
 
 router.post("/register-admin", registerAdmin);
@@ -25,5 +26,6 @@ router.get("/billings", getBillings);
 router.delete('/delete-user/:id',deleteUser)
 router.post("/update-order", updateOrder);
 router.post("/deposit-money-seller",depositMoneyToSellerWallet)
+router.post("/block-user",blockUser)
 
 module.exports = router;

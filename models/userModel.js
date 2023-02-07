@@ -50,6 +50,11 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    accountStatus:{
+      type: String,
+      enum: ["ACTIVE", "BLOCKED"],
+      default: "ACTIVE",
+    }
   },
   { timestamps: true }
 );

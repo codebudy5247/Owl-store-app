@@ -12,7 +12,7 @@ import layout from "../../images/layout.png";
 import Image from "../../components/Image";
 import { styled } from "@mui/material/styles";
 import Button, { ButtonProps } from "@mui/material/Button";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#EE2B70",
@@ -45,14 +45,23 @@ const Signin = () => {
       });
     }
     if (signInResponse) {
-      console.log(signInResponse);
-      localStorage.setItem("authToken", signInResponse?.data?.token);
-      localStorage.setItem("userRole", signInResponse?.data?.oldUser?.role);
-      localStorage.setItem("approvedByAdmin", signInResponse?.data?.oldUser?.approvedByAdmin);
-      navigate("/");
-      toast.success("Login Success !", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      console.log(signInResponse?.data?.oldUser?.accountStatus);
+      if (signInResponse?.data?.oldUser?.accountStatus === "BLOCKED") {
+        toast.error("You have been Banned!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        localStorage.setItem("authToken", signInResponse?.data?.token);
+        localStorage.setItem("userRole", signInResponse?.data?.oldUser?.role);
+        localStorage.setItem(
+          "approvedByAdmin",
+          signInResponse?.data?.oldUser?.approvedByAdmin
+        );
+        navigate("/");
+        toast.success("Login Success !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     }
     setLoading(false);
   };
@@ -206,7 +215,7 @@ const Signin = () => {
                 disabled={!email || !password}
                 // sx={{backgroundColor:"#F8AAC6"}}
               >
-               {loading ? <CircularProgress /> : <>SIGNIN</>} 
+                {loading ? <CircularProgress /> : <>SIGNIN</>}
               </ColorButton>
             </Stack>
           </Box>

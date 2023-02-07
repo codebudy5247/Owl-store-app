@@ -115,6 +115,24 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+//Block User
+exports.blockUser = async (req, res) => {
+  try {
+    const { userID } = req.body;
+    let user = await User.findById(userID);
+    let updateFields = {};
+    updateFields.accountStatus = "BLOCKED";
+    let block_user = await User.findOneAndUpdate(
+      { _id: userID },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res
+      .status(200)
+      .send({ message: `BLOCKED ${user.username}`, block_user: block_user });
+  } catch (error) {}
+};
+
 // ============================================== SELLER PAYMENT/WITHDRAWAL ===============================================================
 
 //Deposit money to seller account after user order
@@ -141,9 +159,7 @@ exports.depositMoneyToSellerWallet = async (req, res) => {
 //Deduct money from seller wallet after withdrawal req approved.
 exports.deductMoneyFromSellerWallet = async (req, res) => {
   try {
-  } catch (error) {
-
-  }
+  } catch (error) {}
 };
 
 //Payment approved / deposit balance   //TODO test required
@@ -196,8 +212,6 @@ exports.deductMoney = async (req, res) => {
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
     let products = await Order.findById(orderId);
-    
-    
 
     // let updateProductFields = {};
     // updateProductFields.avaibility = "Sold";
