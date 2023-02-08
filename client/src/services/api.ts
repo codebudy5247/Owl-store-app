@@ -1,6 +1,6 @@
 import * as axios from "axios";
 
-const apiURL = "http://165.232.185.229:5000/api";
+const apiURL = "http://localhost:5000/api";
 const cardCheckapiURL = "http://93.188.166.198:8080/";
 const cardInfoApiUrl = "https://lookup.binlist.net";
 
@@ -703,6 +703,46 @@ export async function cardInfo(cardNumber: String) {
     const axiosConfig: axios.AxiosRequestConfig = {
       method: "get",
       url: `${cardInfoApiUrl}/${cardNumber}`,
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//Get user withdrawal requests
+export async function getWithdrawalRequest() {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "get",
+      url: `${apiURL}/withdraw/withdrawals`,
+      headers: { Authorization: "Bearer " + token },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+
+//Refund User
+export async function refundUser(OrderId: String, amount: String) {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "post",
+      url: `${apiURL}/order/refund`,
+      headers: { Authorization: "Bearer " + token },
+      data: {
+        OrderId: OrderId,
+        amount: amount,
+      },
     };
     const response = await axios.default.request(axiosConfig);
     const normalizedResponse = normalizeServerResponse(response);

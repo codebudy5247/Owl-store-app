@@ -46,12 +46,34 @@ exports.createOrder = async (req, res) => {
 //Refund Money {CARD === 'DECLINED'}
 exports.refundUser = async (req, res) => {
   try {
-    const { OrderId } = req.body;
+    const { OrderId, amount } = req.body;
     let order = await Order.findById(OrderId);
-    
+    let recipient = await User.findById(order.user);
 
-    res.send(order);
-  } catch (error) {}
+    //Deposit amount to user wallet
+    let updateFields = {};
+    let moneyToDeposit = recipient.walletBalance + amount * 1;
+    updateFields.walletBalance = moneyToDeposit;
+    let user = await User.findOneAndUpdate(
+      { _id: order.user },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    //Deduct amount from seller wallet
+    let seller = await User.findById(order.seller);
+    let sellerWalletBal = seller.walletBalance;
+    let updateSeller = {};
+    let deductAmount = sellerWalletBal - amount * 1;
+    updateSeller.walletBalance = deductAmount;
+    let slr = await User.findOneAndUpdate(
+      { _id: order.seller },
+      { $set: updateSeller },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.status(200).send({ message: "Refunded!",});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 //get user order

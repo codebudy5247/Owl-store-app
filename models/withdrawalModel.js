@@ -20,6 +20,11 @@ const WithdrawalSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
+    paymentStatus:{
+      type: String,
+      enum: ["Approved", "Declined","Pending"],
+      default: "Pending",
+    }
   },
   { timestamps: true }
 );

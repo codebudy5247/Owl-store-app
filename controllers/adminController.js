@@ -162,6 +162,25 @@ exports.deductMoneyFromSellerWallet = async (req, res) => {
   } catch (error) {}
 };
 
+//Deposit money to user/seller
+exports.depositMoneyUser = async (req,res) =>{
+  try {
+    const { amount, recipientId } = req.body;
+    let recipient = await User.findById(recipientId);
+    let updateFields = {};
+    let moneyToDeposit = recipient.walletBalance + amount * 1;
+    updateFields.walletBalance = moneyToDeposit;
+    let user = await User.findOneAndUpdate(
+      { _id: recipientId },
+      { $set: updateFields },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.send("Deposit!")
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 //Payment approved / deposit balance   //TODO test required
 exports.depositMoney = async (req, res) => {
   try {
@@ -241,7 +260,6 @@ exports.deductMoney = async (req, res) => {
       await newSoldCard.save();
     });
     await Promise.all(createSoldCard);
-
     const deleteSoldCards = products.items.map(async (obj) => {
       await Card.findByIdAndRemove(obj.item._id);
     });

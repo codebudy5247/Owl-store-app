@@ -12,7 +12,8 @@ const {
   deleteUser,
   updateOrder,
   depositMoneyToSellerWallet,
-  blockUser
+  blockUser,
+  depositMoneyUser
 } = require("../controllers/adminController");
 
 router.post("/register-admin", registerAdmin);
@@ -27,5 +28,6 @@ router.delete('/delete-user/:id',deleteUser)
 router.post("/update-order", updateOrder);
 router.post("/deposit-money-seller",depositMoneyToSellerWallet)
 router.post("/block-user",blockUser)
+router.post("/deposit-money-user",depositMoneyUser)
 
 module.exports = router;
