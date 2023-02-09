@@ -78,6 +78,8 @@ const Checkout = () => {
   const [checkout_loading, set_checkout_loading] = useState(false);
   const [orderId, setOrderId] = useState("");
 
+  console.log(user, "User______________");
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -122,86 +124,92 @@ const Checkout = () => {
   }, []);
 
   const handleCheckout = async () => {
-    //Create user order
-    set_checkout_loading(true);
-    const [create_order_err, create_order_res] = await Api.createOrder(
-      cartItems,
-      selectedCoin,
-      totalPrice
-    );
-    if (create_order_err) {
-      toast.error(create_order_err?.data, {
+    if (user?.walletBalance < totalPrice) {
+      toast.error("You dont have enough balance.", {
         position: toast.POSITION.TOP_RIGHT,
       });
-    }
-    setOrderId(create_order_res?.data?.order?._id);
-    //Deduct money after order from user wallet
-    if (
-      create_order_res?.status === 201 &&
-      create_order_res?.data?.order?._id
-    ) {
-      const [deduct_amn_err, deduct_amn_res] = await Api.deductAmount(
-        user._id,
-        totalPrice,
-        create_order_res?.data?.order?._id
+    } else {
+      //Create user order
+      set_checkout_loading(true);
+      const [create_order_err, create_order_res] = await Api.createOrder(
+        cartItems,
+        selectedCoin,
+        totalPrice
       );
-      if (deduct_amn_err) {
-        toast.error(deduct_amn_err?.data, {
+      if (create_order_err) {
+        toast.error(create_order_err?.data, {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
-      if (deduct_amn_res) {
-        toast.success("Order placed!", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+      setOrderId(create_order_res?.data?.order?._id);
+      //Deduct money after order from user wallet
+      if (
+        create_order_res?.status === 201 &&
+        create_order_res?.data?.order?._id
+      ) {
+        const [deduct_amn_err, deduct_amn_res] = await Api.deductAmount(
+          user._id,
+          totalPrice,
+          create_order_res?.data?.order?._id
+        );
+        if (deduct_amn_err) {
+          toast.error(deduct_amn_err?.data, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+        if (deduct_amn_res) {
+          toast.success("Order placed!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
 
-        //Check card validation
-        for (const item of create_order_res?.data?.order?.items) {
-          // console.log(item, "item______________");
-          let expiry_date = moment(item?.item?.expiryDate).format("DD/YY");
+          //Check card validation
+          for (const item of create_order_res?.data?.order?.items) {
+            // console.log(item, "item______________");
+            let expiry_date = moment(item?.item?.expiryDate).format("DD/YY");
 
-          const [err, res] = await Api.checkCard(
-            item?.item?.cardNumber,
-            expiry_date,
-            item?.item?.cvv
-          );
-          if (err) {
-            // console.log(err, "card validation error");
-          }
-          if (res) {
-            // console.log("card validation response", res);
-            if (
-              res?.data === `'str' object has no attribute 'decode'` ||
-              res?.data === `INVALID RESPONSE❌ Please try again!`
-            ) {
-              const [err, res] = await Api.checkCard(
-                item?.item?.cardNumber,
-                expiry_date,
-                item?.item?.cvv
-              );
-            } else {
-              let resStr = res?.data?.split(" ");
-              // Refund if card is not valid
-              if (resStr[0] === "DECLINED") {
-                // console.log("refund initiate__________");
-                const [err, res] = await Api.refundUser(
-                  create_order_res?.data?.order?._id,
-                  item?.item?.price
+            const [err, res] = await Api.checkCard(
+              item?.item?.cardNumber,
+              expiry_date,
+              item?.item?.cvv
+            );
+            if (err) {
+              // console.log(err, "card validation error");
+            }
+            if (res) {
+              // console.log("card validation response", res);
+              if (
+                res?.data === `'str' object has no attribute 'decode'` ||
+                res?.data === `INVALID RESPONSE❌ Please try again!`
+              ) {
+                const [err, res] = await Api.checkCard(
+                  item?.item?.cardNumber,
+                  expiry_date,
+                  item?.item?.cvv
                 );
-                if (err) {
-                  // console.log("refund errr", err);
-                }
-                if (res) {
-                  // console.log("refund response____________", res);
+              } else {
+                let resStr = res?.data?.split(" ");
+                // Refund if card is not valid
+                if (resStr[0] === "DECLINED") {
+                  // console.log("refund initiate__________");
+                  const [err, res] = await Api.refundUser(
+                    create_order_res?.data?.order?._id,
+                    item?.item?.price
+                  );
+                  if (err) {
+                    // console.log("refund errr", err);
+                  }
+                  if (res) {
+                    // console.log("refund response____________", res);
+                  }
                 }
               }
             }
           }
+          navigate("/orders");
         }
-        navigate("/orders");
       }
+      set_checkout_loading(false);
     }
-    set_checkout_loading(false);
   };
 
   const displayIcon = (type: any) => {

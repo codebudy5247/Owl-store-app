@@ -10,6 +10,9 @@ const client = new Coinpayments({
 //create order
 exports.createOrder = async (req, res) => {
   const { items, status, payWith, totalPrice } = req.body;
+  let loggedInUser = await User.findById(req.user._id);
+  if (loggedInUser.walletBalance < totalPrice)
+    return res.status(500).json({ message: "You dont have enough balance." });
   const newOrder = new Order({
     seller: req.body.items[0].itemId.createdBy,
     items: items.map((x) => ({ item: x.itemId })),
@@ -20,7 +23,6 @@ exports.createOrder = async (req, res) => {
   });
   try {
     const order = await newOrder.save();
-
     //deposit money to seller account
     let depositPercent = 80;
     let amountToDeposit = (depositPercent / 100) * order.totalPrice;
@@ -70,7 +72,7 @@ exports.refundUser = async (req, res) => {
       { $set: updateSeller },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-    res.status(200).send({ message: "Refunded!",});
+    res.status(200).send({ message: "Refunded!" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

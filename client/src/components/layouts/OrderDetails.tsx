@@ -133,7 +133,7 @@ const OrderDetails = (props: any) => {
                       <TableCell>Expiry Date</TableCell>
                       <TableCell>CVV</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Card status</TableCell>
+                      {/* <TableCell>Card status</TableCell> */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -161,13 +161,13 @@ const OrderDetails = (props: any) => {
                           </TableCell>
                           <TableCell>{item.item?.cvv}</TableCell>
                           <TableCell>฿{item.item?.price}</TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             <CheckCard
                               cardNumber={item.item?.cardNumber}
                               expiryDate={item.item?.expiryDate}
                               cvv={item.item?.cvv}
                             />
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       ))}
                   </TableBody>
