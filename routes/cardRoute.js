@@ -11,9 +11,10 @@ const {
 } = require("../controllers/cardController");
 const Auth = require("../middleware/auth");
 const IsSeller = require("../middleware/IsSeller");
+const IsAdmin = require("../middleware/IsAdmin")
 const cardValidation = require("../middleware/Validator/card.validator");
 
-router.post("/", Auth, IsSeller, createCard);
+router.post("/", Auth, IsSeller,IsAdmin, createCard);
 router.get("/seller_prod", Auth, IsSeller, getSellerCards);
 router.get("/sold_seller_prod", Auth, IsSeller, getSoldCards);
 router.get("/", getAllCards);
