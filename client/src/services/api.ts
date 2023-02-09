@@ -1,6 +1,6 @@
 import * as axios from "axios";
 
-const apiURL = "http://localhost:5000/api";
+const apiURL = "http://165.232.185.229:5000/api";
 const cardCheckapiURL = "http://93.188.166.198:8080/";
 const cardInfoApiUrl = "https://lookup.binlist.net";
 
