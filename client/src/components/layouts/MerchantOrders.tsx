@@ -39,7 +39,7 @@ const TABLE_HEAD = [
   { id: "status", label: "Status", alignRight: false },
   { id: "amount", label: "Total Price", alignRight: true },
   { id: "orderby", label: "Order By", alignRight: true },
-  { id: "paystatus", label: "Payment Status", alignRight: true },
+  // { id: "paystatus", label: "Payment Status", alignRight: true },
 ];
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
@@ -245,7 +245,7 @@ const UserOrders = (props: any) => {
                             <UserDetails userID={order?.user} />
                           </TableCell>
                           <TableCell sx={{}}>
-                            <Box sx={{ display: "flex" }}>
+                            {/* <Box sx={{ display: "flex" }}>
                               {order?.isPaid.toString() === "true" ? (
                                 <>
                                   <Icon
@@ -279,7 +279,7 @@ const UserOrders = (props: any) => {
                                   </Typography>
                                 </>
                               )}
-                            </Box>
+                            </Box> */}
                           </TableCell>
                           {/* {order?.withdrawalRequestCreated.toString() ===
                           "true" ? (
