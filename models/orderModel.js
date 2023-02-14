@@ -6,13 +6,14 @@ const OrderSchema = new mongoose.Schema(
     items: [
       {
         item: { type: Object, required: true },
+        
       },
     ],
-    status: {
-      type: String,
-      enum: ["Placed", "Cancelled", "Completed"],
-      default: "Placed",
-    },
+    // status: {
+    //   type: String,
+    //   enum: ["Placed", "Cancelled", "Completed"],
+    //   default: "Placed",
+    // },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -29,14 +30,16 @@ const OrderSchema = new mongoose.Schema(
       default: "BTC",
     },
     totalPrice: { type: Number, required: true },
-    isPaid: { type: Boolean, default: false },
-    tx_id:{
-      type:String
-    },
-    withdrawalRequestCreated:{
-      type:Boolean,
-      default:'false'
-    }
+    // isPaid: { type: Boolean, default: false },
+    // tx_id:{
+    //   type:String
+    // },
+    // withdrawalRequestCreated:{
+    //   type:Boolean,
+    //   default:'false'
+    // }
+    refund_status:String,
+    refund_amount:String
   },
   { timestamps: true }
 );

@@ -20,15 +20,17 @@ import EmptyOrderImg from "../../images/orderimg.png";
 import UserDetails from "../UserDetails";
 import OrderDetails from "./OrderDetails";
 import CheckCard from "./CheckCard";
+import * as Api from "../../services/api";
+import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
   { id: "id", label: "Order Id", alignRight: false },
   { id: "date", label: "Purchase Date", alignRight: false },
   { id: "items", label: "Total Items", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
+  // { id: "status", label: "Status", alignRight: false },
   { id: "amount", label: "Total Price", alignRight: true },
   { id: "seller", label: "Seller", alignRight: true },
-  { id: "paystatus", label: "Payment Status", alignRight: true },
+  // { id: "paystatus", label: "Payment Status", alignRight: true },
 ];
 
 const UserOrders = (props: any) => {
@@ -62,23 +64,85 @@ const UserOrders = (props: any) => {
       );
   };
 
-  console.log({props})
+  // console.log({ props });
 
   const [orderDetail, setOrderDetail] = useState<any>();
-
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const orderDetails = (order: any) => {
-    handleOpen();
+  const [userOrders, setUserOrders] = useState<any>();
+  const getUserOrders = async () => {
+    const [user_order_err, user_order_res] = await Api.getOrdersUsers();
+    if (user_order_err) {
+      console.log(user_order_err);
+    }
+    setUserOrders(user_order_res?.data);
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      await getUserOrders();
+    };
+    init();
+  }, [])
+  
+
+  const orderDetails = async (order: any) => {
     setOrderDetail(order);
+    if (orderDetail?.refund_status.toString() === "false") {
+      //Check card validation
+      for (const item of orderDetail?.items) {
+        console.log(item, "Ordered item______________");
+        let expiry_date = moment(item?.item?.expiryDate).format("MM/YY");
+        const [err, res] = await Api.checkCard(
+          item?.item?.cardNumber,
+          expiry_date,
+          item?.item?.cvv
+        );
+        if (err) {
+          // console.log(err, "card validation error");
+        }
+        if (res) {
+          // console.log("card validation response", res);
+          if (
+            res?.data === `'str' object has no attribute 'decode'` ||
+            res?.data === `INVALID RESPONSE❌ Please try again!`
+          ) {
+            const [err, res] = await Api.checkCard(
+              item?.item?.cardNumber,
+              expiry_date,
+              item?.item?.cvv
+            );
+          } else {
+            let resStr = res?.data?.split(" ");
+            // Refund if card is not valid
+            if (resStr[0] === "DECLINED") {
+              // console.log("refund initiate__________");
+              const [err, res] = await Api.refundUser(
+                orderDetail?._id,
+                item?.item?.price
+              );
+              if (err) {
+                // console.log("refund errr", err);
+              }
+              if (res) {
+                console.log("refund response____________", res);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      console.log("You are refunded for this order!");
+    }
+    handleOpen();
   };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 5 }}>
       <Card sx={{ borderRadius: 5, p: 3 }}>
-        {props?.userOrders?.length === 0 || props?.userOrders === undefined ? (
+        {userOrders?.length === 0 || userOrders === undefined ? (
           <>
             <EmptyContent
               title="You haven't placed any order yet!"
@@ -112,7 +176,7 @@ const UserOrders = (props: any) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {props?.userOrders.map((order: any) => (
+                    {userOrders.map((order: any) => (
                       <>
                         <TableRow
                           sx={{ cursor: "pointer" }}
@@ -156,7 +220,7 @@ const UserOrders = (props: any) => {
                               {order?.items?.length}
                             </Typography>
                           </TableCell>
-                          <TableCell sx={{}}>
+                          {/* <TableCell sx={{}}>
                             <Box sx={{ display: "flex" }}>
                               {displayIcon(order?.status)}
                               <Typography
@@ -167,7 +231,7 @@ const UserOrders = (props: any) => {
                                 {order?.status}
                               </Typography>
                             </Box>
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell sx={{}}>
                             <Typography
                               variant="subtitle2"
@@ -180,7 +244,7 @@ const UserOrders = (props: any) => {
                           <TableCell sx={{}}>
                             <UserDetails userID={order?.seller} />
                           </TableCell>
-                          <TableCell sx={{}}>
+                          {/* <TableCell sx={{}}>
                             <Box sx={{ display: "flex" }}>
                               {order?.isPaid.toString() === "true" ? (
                                 <>
@@ -216,7 +280,7 @@ const UserOrders = (props: any) => {
                                 </>
                               )}
                             </Box>
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       </>
                     ))}

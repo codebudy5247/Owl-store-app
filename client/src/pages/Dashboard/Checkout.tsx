@@ -161,50 +161,49 @@ const Checkout = () => {
           toast.success("Order placed!", {
             position: toast.POSITION.TOP_RIGHT,
           });
-
           //Check card validation
-          for (const item of create_order_res?.data?.order?.items) {
-            // console.log(item, "item______________");
-            let expiry_date = moment(item?.item?.expiryDate).format("DD/YY");
+          // for (const item of create_order_res?.data?.order?.items) {
+          //   // console.log(item, "item______________");
+          //   let expiry_date = moment(item?.item?.expiryDate).format("DD/YY");
 
-            const [err, res] = await Api.checkCard(
-              item?.item?.cardNumber,
-              expiry_date,
-              item?.item?.cvv
-            );
-            if (err) {
-              // console.log(err, "card validation error");
-            }
-            if (res) {
-              // console.log("card validation response", res);
-              if (
-                res?.data === `'str' object has no attribute 'decode'` ||
-                res?.data === `INVALID RESPONSE❌ Please try again!`
-              ) {
-                const [err, res] = await Api.checkCard(
-                  item?.item?.cardNumber,
-                  expiry_date,
-                  item?.item?.cvv
-                );
-              } else {
-                let resStr = res?.data?.split(" ");
-                // Refund if card is not valid
-                if (resStr[0] === "DECLINED") {
-                  // console.log("refund initiate__________");
-                  const [err, res] = await Api.refundUser(
-                    create_order_res?.data?.order?._id,
-                    item?.item?.price
-                  );
-                  if (err) {
-                    // console.log("refund errr", err);
-                  }
-                  if (res) {
-                    // console.log("refund response____________", res);
-                  }
-                }
-              }
-            }
-          }
+          //   const [err, res] = await Api.checkCard(
+          //     item?.item?.cardNumber,
+          //     expiry_date,
+          //     item?.item?.cvv
+          //   );
+          //   if (err) {
+          //     // console.log(err, "card validation error");
+          //   }
+          //   if (res) {
+          //     // console.log("card validation response", res);
+          //     if (
+          //       res?.data === `'str' object has no attribute 'decode'` ||
+          //       res?.data === `INVALID RESPONSE❌ Please try again!`
+          //     ) {
+          //       const [err, res] = await Api.checkCard(
+          //         item?.item?.cardNumber,
+          //         expiry_date,
+          //         item?.item?.cvv
+          //       );
+          //     } else {
+          //       let resStr = res?.data?.split(" ");
+          //       // Refund if card is not valid
+          //       if (resStr[0] === "DECLINED") {
+          //         // console.log("refund initiate__________");
+          //         const [err, res] = await Api.refundUser(
+          //           create_order_res?.data?.order?._id,
+          //           item?.item?.price
+          //         );
+          //         if (err) {
+          //           // console.log("refund errr", err);
+          //         }
+          //         if (res) {
+          //           // console.log("refund response____________", res);
+          //         }
+          //       }
+          //     }
+          //   }
+          // }
           navigate("/orders");
         }
       }

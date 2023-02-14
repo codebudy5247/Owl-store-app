@@ -20,6 +20,7 @@ exports.createOrder = async (req, res) => {
     totalPrice,
     user: req.user._id,
     status,
+    refund_status:false
   });
   try {
     const order = await newOrder.save();
@@ -51,7 +52,6 @@ exports.refundUser = async (req, res) => {
     const { OrderId, amount } = req.body;
     let order = await Order.findById(OrderId);
     let recipient = await User.findById(order.user);
-
     //Deposit amount to user wallet
     let updateFields = {};
     let moneyToDeposit = recipient.walletBalance + amount * 1;
@@ -72,11 +72,37 @@ exports.refundUser = async (req, res) => {
       { $set: updateSeller },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-    res.status(200).send({ message: "Refunded!" });
+    //Update order refund status
+    let updateOrderField = {}
+    updateOrderField.refund_status = true
+    let updateOrder = await Order.findOneAndUpdate(
+      { _id: OrderId },
+      { $set: updateOrderField },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    console.table(updateOrder)
+    res.status(200).send({ message: "Refunded!",updateOrder });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+//Update order refund status
+exports.updateOrderStatus = async (req,res) => {
+  try {
+    const {orderId} = req.body
+    let updateOrderField = {}
+    updateOrderField.refund_status = true
+    let updateOrder = await Order.findOneAndUpdate(
+      { _id: orderId },
+      { $set: updateOrderField },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.status(200).send({ message: "Updated!",updateOrder });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
 //get user order
 exports.getUserOrder = async (req, res) => {

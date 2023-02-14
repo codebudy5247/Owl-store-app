@@ -7,10 +7,7 @@ import { styled } from "@mui/material/styles";
 import Button, { ButtonProps } from "@mui/material/Button";
 import {
   Box,
-  Stack,
-  TextField,
   Typography,
-  Autocomplete,
   Container,
   TableContainer,
   Paper,
@@ -24,6 +21,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import moment from "moment";
 import CheckCard from "./CheckCard";
+import OrderDetailsCardNumber from "./OrderDetailsCardNumber";
+import OrderDetailsCvv from "./OrderDetailsCvv";
+import OrderDetailsExpiryDate from "./OrderDetailsExpiryDate";
 
 const displayIcon = (type: any) => {
   if (type === "master")
@@ -36,6 +36,8 @@ const displayIcon = (type: any) => {
 const OrderDetails = (props: any) => {
   const [fullWidth, setFullWidth] = useState(true);
   const [maxWidth, setMaxWidth] = useState<DialogProps["maxWidth"]>("md"); //xs,sm,md,false,lg,xl
+  let userRole: string = localStorage.getItem("userRole")!;
+
   return (
     <div>
       <Dialog
@@ -54,7 +56,7 @@ const OrderDetails = (props: any) => {
           </Box>
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ p: 4 }}>
+          <Box sx={{ p: 2 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="h6" sx={{ font: "bold" }}>
                 Order Id
@@ -62,67 +64,15 @@ const OrderDetails = (props: any) => {
               <Typography variant="h6">{props?.orderDetail?._id}</Typography>
             </Box>
 
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
-            >
-              <Typography variant="h6" sx={{ font: "bold" }}>
-                Payment Staus
-              </Typography>
-              <Box sx={{ display: "flex" }}>
-                {props?.orderDetail?.isPaid.toString() === "true" ? (
-                  <>
-                    <Icon
-                      icon="fluent-mdl2:completed-solid"
-                      height={40}
-                      width={40}
-                      color="green"
-                    />
-                    <Typography
-                      variant="subtitle2"
-                      noWrap
-                      sx={{ fontSize: "medium", ml: 2, mt: 1 }}
-                    >
-                      Paid
-                    </Typography>
-                  </>
-                ) : (
-                  <>
-                    <Icon
-                      icon="material-symbols:pending-actions"
-                      height={40}
-                      width={40}
-                      color="lightblue"
-                    />
-                    <Typography
-                      variant="subtitle2"
-                      noWrap
-                      sx={{ fontSize: "medium", ml: 2, mt: 1 }}
-                    >
-                      Payment pending
-                    </Typography>
-                  </>
-                )}
-              </Box>
-            </Box>
-
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
-            >
-              <Typography variant="h6" sx={{ font: "bold" }}>
-                Status
-              </Typography>
-              <Typography variant="h6">{props?.orderDetail?.status}</Typography>
-            </Box>
-
             <Typography variant="h6" sx={{ font: "bold", mt: 2 }}>
               Ordered Items:
             </Typography>
             <br />
             <Container
-              maxWidth="xl"
               sx={{
                 mt: 1,
                 mb: 2,
+                width:"100%"
               }}
             >
               <TableContainer component={Paper}>
@@ -133,7 +83,16 @@ const OrderDetails = (props: any) => {
                       <TableCell>Expiry Date</TableCell>
                       <TableCell>CVV</TableCell>
                       <TableCell>Price</TableCell>
-                      {/* <TableCell>Card status</TableCell> */}
+                      {userRole === "ROLE_USER" ? (
+                        <TableCell>Card status</TableCell>
+                      ) : (
+                        <></>
+                      )}
+                      <TableCell>Country</TableCell>
+                      <TableCell>State</TableCell>
+                      <TableCell>City</TableCell>
+                      <TableCell>Street</TableCell>
+                      <TableCell>Zip</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -146,30 +105,57 @@ const OrderDetails = (props: any) => {
                             // cursor: "pointer",
                           }}
                         >
-                          <TableCell sx={{ display: "flex" }}>
-                            {displayIcon(item.item.type)}
-                            <Typography
-                              variant="subtitle2"
-                              noWrap
-                              sx={{ ml: 1, mt: 1 }}
-                            >
-                              {item.item?.cardNumber}
-                            </Typography>
+                          <TableCell>
+                            {/* {displayIcon(item.item.type)} */}
+                              {/* {item.item?.cardNumber} */}
+                              <OrderDetailsCardNumber
+                                orderId={props?.orderDetail?._id}
+                                cardNumber={item?.item?.cardNumber}
+                                expiryDate={item?.item?.expiryDate}
+                                cvv={item?.item?.cvv}
+                              />
+                            
                           </TableCell>
                           <TableCell>
-                            {moment(item.item?.expiryDate).format("MM-YYYY")}
-                          </TableCell>
-                          <TableCell>{item.item?.cvv}</TableCell>
-                          <TableCell>฿{item.item?.price}</TableCell>
-                          {/* <TableCell>
-                            <CheckCard
+                            {/* {moment(item.item?.expiryDate).format("MM-YYYY")} */}
+                            <OrderDetailsExpiryDate
+                              orderId={props?.orderDetail?._id}
                               cardNumber={item.item?.cardNumber}
                               expiryDate={item.item?.expiryDate}
                               cvv={item.item?.cvv}
                             />
-                          </TableCell> */}
+                          </TableCell>
+                          <TableCell>
+                            {/* {item.item?.cvv} */}
+                            <OrderDetailsCvv
+                              orderId={props?.orderDetail?._id}
+                              cardNumber={item.item?.cardNumber}
+                              expiryDate={item.item?.expiryDate}
+                              cvv={item.item?.cvv}
+                            />
+                          </TableCell>
+                          <TableCell>฿{item.item?.price}</TableCell>
+                          {userRole === "ROLE_USER" ? (
+                            <TableCell>
+                              <CheckCard
+                                cardNumber={item.item?.cardNumber}
+                                expiryDate={item.item?.expiryDate}
+                                cvv={item.item?.cvv}
+                                refundStatus={props?.orderDetail?.refund_status}
+                              />
+                            </TableCell>
+                            
+                          ) : (
+                            <></>
+                          )}
+                           <TableCell>{item.item?.address?.country}</TableCell>
+                           <TableCell>{item.item?.address?.state}</TableCell>
+                           <TableCell>{item.item?.address?.city}</TableCell>
+                           <TableCell>{item.item?.address?.street}</TableCell>
+                           <TableCell>{item.item?.address?.zip}</TableCell>
                         </TableRow>
                       ))}
+                     
                   </TableBody>
                 </Table>
               </TableContainer>

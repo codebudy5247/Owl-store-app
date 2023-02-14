@@ -60,13 +60,19 @@ const AddCard = () => {
 
   const [cardInfo, setCardInfo] = useState<any>();
 
+  
+
   // console.log(cardInfo, "Card Info___________");
+  console.log("expiryDate",expiryDate)
 
   const onChangeCCNumber = async (e: any) => {
     setCcNumber(e.target.value);
   };
   const onChangeExpiryDate = (e: any) => {
-    let date = moment(e.target.value).toISOString(); //ISO 8601 format
+    
+    let date = moment(e.target.value)
+    .toISOString() //ISO 8601 format
+    // .format("MM/YY") 
     setExpiryDate(date);
   };
   const onChangeCVV = (e: any) => {
@@ -81,9 +87,9 @@ const AddCard = () => {
   const onChangeZip = (e: any) => {
     setZip(e.target.value);
   };
-  const onChangeState: any = (e: any, values: any) => {
-    setState(values.code);
-  };
+  // const onChangeState: any = (e: any, values: any) => {
+  //   setState(values.code);
+  // };
   const onChangeCity = (e: any) => {
     setCity(e.target.value);
   };
@@ -160,16 +166,7 @@ const AddCard = () => {
           />
           {/* Expiry Date */}
           <label>Expiry Date</label>
-          {/* <input
-            width={200}
-            type="month"
-            id="start"
-            name="start"
-            min="2022-01"
-            defaultValue="2022-01"
-            onChange={onChangeExpiryDate}
-          ></input> */}
-           <TextField
+          <TextField
             type="month"
             required={true}
             fullWidth
@@ -190,9 +187,6 @@ const AddCard = () => {
             variant="outlined"
             onChange={onChangeCVV}
           />
-        </Stack>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
-          {/* street */}
           <TextField
             required={true}
             fullWidth
@@ -200,16 +194,6 @@ const AddCard = () => {
             label="Street"
             variant="outlined"
             onChange={onChangeStreet}
-          />
-          {/* Mobile */}
-          <TextField
-            required={true}
-            fullWidth
-            id="mobile"
-            // label="Phone number"
-            variant="outlined"
-            value={cardInfo?.bank?.phone}
-            // onChange={onChangeMobile}
           />
         </Stack>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
@@ -224,14 +208,15 @@ const AddCard = () => {
           />
           {/* Country */}
           <TextField
-            required={true}
+            id="outlined-read-only-input"
             fullWidth
-            id="mobile"
-            // label="Phone number"
-            variant="outlined"
+            label="Country"
+            InputProps={{
+              readOnly: true,
+            }}
             value={cardInfo?.country?.name}
-            // onChange={onChangeMobile}
           />
+
           {/* <Autocomplete
             fullWidth
             id="country-select-demo"
@@ -270,7 +255,15 @@ const AddCard = () => {
         </Stack>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
           {/* States */}
-          <Autocomplete
+          <TextField
+            required={true}
+            fullWidth
+            id="state"
+            label="State"
+            variant="outlined"
+            onChange={(e:any) => setState(e.target.value) }
+          />
+          {/* <Autocomplete
             fullWidth
             id="country-select-demo"
             options={USAstates}
@@ -296,7 +289,7 @@ const AddCard = () => {
                 }}
               />
             )}
-          />
+          /> */}
           {/* City */}
           <TextField
             required={true}
@@ -310,20 +303,22 @@ const AddCard = () => {
         <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
           {/* Type */}
           <TextField
-            required={true}
+            id="outlined-read-only-input"
             fullWidth
-            id="od"
-            // label="Type"
-            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Type"
             value={cardInfo?.type}
           />
           {/* Label */}
           <TextField
-            required={true}
+            id="outlined-read-only-input"
             fullWidth
-            id="od"
-            // label="Lavel"
-            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Lavel"
             value={cardInfo?.scheme}
           />
         </Stack>
@@ -368,11 +363,12 @@ const AddCard = () => {
         </Stack>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
           <TextField
-            required={true}
+            id="outlined-read-only-input"
             fullWidth
-            id="od"
-            // label="Bank"
-            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Bank"
             value={cardInfo?.bank?.name}
           />
         </Stack>

@@ -752,3 +752,24 @@ export async function refundUser(OrderId: String, amount: String) {
     return [errorObject, null];
   }
 }
+
+//Update order refund status
+export async function updateOrderRefundStatus(OrderId: String) {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "post",
+      url: `${apiURL}/order/update-order-refund-status`,
+      headers: { Authorization: "Bearer " + token },
+      data: {
+        orderId: OrderId,
+      },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
