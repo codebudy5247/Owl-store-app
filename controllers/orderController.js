@@ -13,6 +13,7 @@ exports.createOrder = async (req, res) => {
   let loggedInUser = await User.findById(req.user._id);
   if (loggedInUser.walletBalance < totalPrice)
     return res.status(500).json({ message: "You dont have enough balance." });
+
   const newOrder = new Order({
     seller: req.body.items[0].itemId.createdBy,
     items: items.map((x) => ({ item: x.itemId })),

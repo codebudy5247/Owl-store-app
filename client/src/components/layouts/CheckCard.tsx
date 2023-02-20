@@ -1,10 +1,19 @@
 import styled from "@emotion/styled";
-import { Button, ButtonProps, Typography } from "@mui/material";
+import {
+  Button,
+  ButtonProps,
+  FormControlLabel,
+  FormGroup,
+  Switch,
+  Typography,
+} from "@mui/material";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import CachedIcon from "@mui/icons-material/Cached";
 import { Box } from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { pink } from "@mui/material/colors";
 
 import * as Api from "../../services/api";
 
@@ -17,13 +26,16 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   },
 }));
 
+const label = { inputProps: { "aria-label": "Color switch demo" } };
+
 const CheckCard = (props: any) => {
   const [loading, setLoading] = useState(false);
   const [cardStatus, setCardStatus] = useState<any>();
 
   let expiry_date = moment(props?.expiryDate).format("MM/YY");
 
-  console.log(expiry_date,"expiry_date_______check card")
+  // console.log(expiry_date,"expiry_date_______check card")
+  console.log("cardStatus", cardStatus);
 
   //Check card validation {Dead/Alive}
   async function checkCardValidation() {
@@ -37,6 +49,8 @@ const CheckCard = (props: any) => {
       console.log(err);
     }
     if (res) {
+      console.log("crd check response",res);
+      
       if (
         res?.data === `'str' object has no attribute 'decode'` ||
         res?.data === `INVALID RESPONSE❌ Please try again!`
@@ -60,11 +74,23 @@ const CheckCard = (props: any) => {
   const onClickHandler = async () => {
     await checkCardValidation();
   };
+
+  const showCardDetails = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    props?.setShowCard(event.target.checked);
+    const [err, res] = await Api.updateOrderRefundStatus(props?.orderId);
+    if (res) {
+      console.log(res, "updateOrderStatus Refund res");
+    }
+  };
   return (
     <>
-      <Box sx={{ display: "flex", gap: 3 }}>
+      <Box sx={{ display: "flex", gap: 5 }}>
         {loading ? (
-          <CircularProgress size={20} />
+          <Box sx={{ mt: 1 }}>
+            <CircularProgress size={20} />
+          </Box>
         ) : (
           <>
             {cardStatus === "DECLINED" ? (
@@ -75,7 +101,7 @@ const CheckCard = (props: any) => {
                     fontSize: "medium",
                     color: "red",
                     fontWeight: "bold",
-                    // mt: 1,
+                    mt: 1,
                   }}
                 >
                   {/* <CancelIcon />  */}
@@ -92,7 +118,7 @@ const CheckCard = (props: any) => {
                   fontSize: "medium",
                   color: "green",
                   fontWeight: "bold",
-                  // mb: 1,
+                  mt: 1,
                 }}
               >
                 {/* <CheckCircleIcon />  */}
@@ -116,13 +142,33 @@ const CheckCard = (props: any) => {
           </>
         )}
 
-        {/* {cardStatus === "DECLINED" ? (
-          <>
-            <ColorButton variant="contained">Refund</ColorButton>
-          </>
-        ) : (
-          <></>
-        )} */}
+        <Box>
+          {cardStatus === "LIVE" ? (
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={props?.showCard}
+                    onChange={showCardDetails}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label="Check details"
+              />
+            </FormGroup>
+          ) : (
+            <></>
+          )}
+
+          {cardStatus === "DECLINED" ||
+          cardStatus === undefined ||
+          cardStatus === `'str' object has no attribute 'decode'` ||
+          cardStatus === `INVALID RESPONSE❌ Please try again!` ? (
+            <Switch {...label} disabled />
+          ) : (
+            <></>
+          )}
+        </Box>
       </Box>
     </>
   );

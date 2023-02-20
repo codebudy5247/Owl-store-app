@@ -21,130 +21,114 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 const OrderDetailsCardNumber = (props: any) => {
-  console.log({props})
   const [loading, setLoading] = useState(false);
-  const [cardStatus, setCardStatus] = useState<any>();
+  const [cardStatus, setCardStatus] = useState<any>('LIVE');
   const [showCvv, setShowCvv] = useState(false);
 
   let expiry_date = moment(props?.expiryDate).format("MM/YY");
 
   //Check card validation {Dead/Alive}
-  async function checkCardValidation() {
-    setLoading(true);
-    const [err, res] = await Api.checkCard(
-      props?.cardNumber,
-      expiry_date,
-      props?.cvv
-    );
-    if (err) {
-      console.log(err);
-    }
+  // async function checkCardValidation() {
+  //   setLoading(true);
+  //   const [err, res] = await Api.checkCard(
+  //     props?.cardNumber,
+  //     expiry_date,
+  //     props?.cvv
+  //   );
+  //   if (err) {
+  //     console.log(err);
+  //   }
+  //   if (res) {
+  //     if (
+  //       res?.data === `'str' object has no attribute 'decode'` ||
+  //       res?.data === `INVALID RESPONSE❌ Please try again!`
+  //     ) {
+  //       setCardStatus(res?.data);
+  //     } else {
+  //       let resStr = res?.data?.split(" ");
+  //       setCardStatus(resStr[0]);
+  //     }
+  //   }
+  //   setLoading(false);
+  // }
+
+  // useEffect(() => {
+  //   const checkCard = async () => {
+  //     await checkCardValidation();
+  //   };
+  //   checkCard();
+  // }, [props?.cartItems]);
+
+  // const onClickHandler = async () => {
+  //   await checkCardValidation();
+  // };
+
+  const updateOrderStatus = async () => {
+    setShowCvv(true);
+    const [err, res] = await Api.updateOrderRefundStatus(props?.orderId);
     if (res) {
-      if (
-        res?.data === `'str' object has no attribute 'decode'` ||
-        res?.data === `INVALID RESPONSE❌ Please try again!`
-      ) {
-        setCardStatus(res?.data);
-      } else {
-        let resStr = res?.data?.split(" ");
-        setCardStatus(resStr[0]);
-      }
+      console.log(res, "updateOrderStatus Refund res");
     }
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    const checkCard = async () => {
-      await checkCardValidation();
-    };
-    checkCard();
-  }, [props?.cartItems]);
-
-  const onClickHandler = async () => {
-    await checkCardValidation();
   };
-
-  const updateOrderStatus = async() =>{
-    setShowCvv(true)
-    const [err,res] = await Api.updateOrderRefundStatus(props?.orderId)
-    if(res){
-      console.log(res,"updateOrderStatus Refund res")
-    }
-  }
 
   return (
     <>
-      {loading ? (
-        <CircularProgress size={20} />
+      {cardStatus === "LIVE" ? (
+        <Box>
+          {props?.showCard ? (
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontSize: "medium",
+                }}
+              >
+                {props?.cardNumber}
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontSize: "medium",
+                  //   color: "red",
+                  //   fontWeight: "bold",
+                  mt: 0.5,
+                }}
+              >
+                {props?.cardNumber?.slice(0, 6)}...
+              </Typography>
+            </Box>
+          )}
+        </Box>
       ) : (
         <>
-          {cardStatus === "LIVE" ? (
-            <Box>
-              {showCvv ? (
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{
-                      fontSize: "medium",
-                      //   color: "red",
-                    //   fontWeight: "bold",
-                      // mt: 1,
-                    }}
-                  >
-                    {props?.cardNumber}
-                  </Typography>
-                  <Box onClick={() => setShowCvv(false)}>
-                    <VisibilityOffIcon />
-                  </Box>
-                </Box>
-              ) : (
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{
-                      fontSize: "medium",
-                      //   color: "red",
-                    //   fontWeight: "bold",
-                      mt: 0.5,
-                    }}
-                  >
-                    {props?.cardNumber?.slice(0, 6)}...
-                  </Typography>
-                  <Box onClick={updateOrderStatus}>
-                    <VisibilityIcon />
-                  </Box>
-                </Box>
-              )}
-            </Box>
-          ) : (
-            <>
-              <Box>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    fontSize: "medium",
-                    // color: "red",
-                    // fontWeight: "bold",
-                    // mt: 1,
-                  }}
-                >
-                 {props?.cardNumber?.slice(0, 6)}...
-                </Typography>
-              </Box>
-            </>
-          )}
-
-          {cardStatus === `'str' object has no attribute 'decode'` ||
-          cardStatus === `INVALID RESPONSE❌ Please try again!` ? (
-            <Box>
-              <ColorButton variant="contained" onClick={onClickHandler}>
-                <CachedIcon />
-              </ColorButton>
-            </Box>
-          ) : (
-            <></>
-          )}
+          <Box>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontSize: "medium",
+                // color: "red",
+                // fontWeight: "bold",
+                // mt: 1,
+              }}
+            >
+              {props?.cardNumber?.slice(0, 6)}...
+            </Typography>
+          </Box>
         </>
+      )}
+
+      {cardStatus === `'str' object has no attribute 'decode'` ||
+      cardStatus === `INVALID RESPONSE❌ Please try again!` ? (
+        <Box>
+          <ColorButton variant="contained">
+            <CachedIcon />
+          </ColorButton>
+        </Box>
+      ) : (
+        <></>
       )}
     </>
   );
