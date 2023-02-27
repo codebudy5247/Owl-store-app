@@ -33,8 +33,9 @@ router.get("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const rules = await rulesModel.findById(req.params.id);
+    console.log(rules)
     if (!rules) return res.status(404).json({ msg: "rules not found" });
-    await rules.findByIdAndRemove(req.params.id);
+    await rulesModel.findByIdAndRemove(req.params.id);
     res.json({ msg: "rules removed" });
   } catch (err) {
     console.error(err.message);

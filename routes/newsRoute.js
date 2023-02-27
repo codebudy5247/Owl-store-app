@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const newsModel = require("../models/newsModel");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 router.post("/", async (req, res) => {
   const { title, content } = req.body;
@@ -32,10 +33,14 @@ router.get("/", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const news = await newsModel.findById(req.params.id);
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).send({ message: "Invalid news ID" });
+    }
+    const news = await newsModel.findById(id);
     if (!news) return res.status(404).json({ msg: "News not found" });
-    await news.findByIdAndRemove(req.params.id);
-    res.json({ msg: "news removed" });
+    await newsModel.findByIdAndRemove(news._id);
+    res.send("News Removed!");
   } catch (err) {
     console.error(err.message);
     res.status(500).json({
