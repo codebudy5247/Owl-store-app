@@ -40,7 +40,8 @@ const Signin = () => {
     setLoading(true);
     const [signInError, signInResponse] = await Api.signIn(email, password);
     if (signInError) {
-      toast.error("Something went wrong!", {
+      console.log("signInError",signInError)
+      toast.error(signInError?.data, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }

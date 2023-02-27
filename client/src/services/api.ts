@@ -4,7 +4,7 @@ const apiURL = "http://165.232.185.229:5000/api";
 const cardCheckapiURL = "http://93.188.166.198:8080/";
 const cardInfoApiUrl = "https://lookup.binlist.net";
 
-// "http://localhost:5000/api" || "https://owl-store.onrender.com/api" || http://165.232.185.229:5000/api
+// "http://localhost:5000/api" || http://165.232.185.229:5000/api
 
 interface ResponseData {
   data: any;
@@ -42,7 +42,7 @@ function normalizeServerResponse(serverResponse: any) {
 
 function normalizeServerError(serverResponse: any) {
   let response: ResponseData = {
-    data: serverResponse.message,
+    data: serverResponse.response.data.message,
     status: serverResponse.status,
   };
 
@@ -616,6 +616,43 @@ export async function getTickets() {
       method: "get",
       url: `${apiURL}/ticket/user-tickets`,
       headers: { Authorization: "Bearer " + token },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+//Get single reply
+export async function getReplyAnswer(id: string) {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "get",
+      url: `${apiURL}/answer/${id}`,
+      headers: { Authorization: "Bearer " + token },
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    return [null, normalizedResponse];
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    return [errorObject, null];
+  }
+}
+//Close ticket
+export async function closeTicket(id:string) {
+  try {
+    let token: any = localStorage.getItem("authToken");
+    const axiosConfig: axios.AxiosRequestConfig = {
+      method: "post",
+      url: `${apiURL}/ticket/close-ticket`,
+      headers: { Authorization: "Bearer " + token },
+      data:{
+        ticketID:id
+      }
     };
     const response = await axios.default.request(axiosConfig);
     const normalizedResponse = normalizeServerResponse(response);

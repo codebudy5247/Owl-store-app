@@ -7,8 +7,39 @@ import * as Api from "../../services/api";
 import Button, { ButtonProps } from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import moment from "moment";
 import CreateTicketModel from "../../components/layouts/CreateTicketModel";
+import {toast } from "react-toastify";
+
+const Reply = (props: any) => {
+  const [answer, setAnswer] = useState<any>();
+  const getAnswer = async () => {
+    for (const ansID of props.answerId) {
+      const [err, res] = await Api.getReplyAnswer(ansID);
+      if (res) {
+        setAnswer(res?.data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getAnswer();
+  }, []);
+
+  return (
+    <>
+      <Box>
+        <Typography variant="h5" sx={{ textAlign: "start" }}>
+          Response:
+        </Typography>
+        <Typography variant="h5" sx={{ textAlign: "start" }}>
+          {answer?.content}
+        </Typography>
+      </Box>
+    </>
+  );
+};
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#EE2B70",
@@ -40,11 +71,26 @@ const Tickets = () => {
     init();
   }, []);
 
+  const closeTicketHandler = async(ticketId:string) =>{
+       const [err,res] = await Api.closeTicket(ticketId)
+       if(err){
+        toast.error(err?.data, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+       }
+       if(res){
+        toast.success("Ticket closed!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        getTickets();
+       }
+  }
+
   return (
     <Box>
       <Navbar />
       <Header title="Tickets" subtitle="Owl Store > Tickets" />
-      <Box sx={{height:'100vh'}}>
+      <Box sx={{ height: "100vh" }}>
         <Box
           sx={{
             display: "flex",
@@ -83,13 +129,35 @@ const Tickets = () => {
                 }}
               >
                 <>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    {/*  */}
+                    {o?.status === "CLOSED" ? (
+                      <>
+                      <ColorButton
+                        variant="contained"
+                        disabled
+                      >
+                        {o?.status}
+                      </ColorButton>
+                      </>
+                    ) : (
+                      <ColorButton
+                        variant="contained"
+                        startIcon={<RemoveIcon />}
+                        onClick={() => closeTicketHandler(o._id)}
+                      >
+                        {" "}
+                        Close ticket
+                      </ColorButton>
+                    )}
+                  </Box>
                   <Typography variant="h5">{o?.title}</Typography>
                   <Typography variant="body1">{o?.content}</Typography>
                   <Typography variant="subtitle2" noWrap>
                     {moment(o?.createdAt).format("MM-DD-YYYY HH:mm")}
                   </Typography>
                 </>
-                {o?.reply.length > 0 ? (
+                {/* {o?.reply.length > 0 ? (
                   <>
                     {o?.reply.map((rep: any) => (
                       <>
@@ -100,11 +168,17 @@ const Tickets = () => {
                   </>
                 ) : (
                   <></>
-                )}
+                )} */}
+                <br />
+                <Reply answerId={o.reply.map((rep: any) => rep)} />
               </Card>
             ))}
         </Box>
-        <CreateTicketModel open={open} handleClose={handleClose} getTickets={getTickets} />
+        <CreateTicketModel
+          open={open}
+          handleClose={handleClose}
+          getTickets={getTickets}
+        />
       </Box>
       <Footer />
     </Box>

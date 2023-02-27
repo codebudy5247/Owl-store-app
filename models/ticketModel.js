@@ -22,6 +22,9 @@ const TicketSchema = new mongoose.Schema(
         ref: "Answer",
       },
     ],
+    status: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
