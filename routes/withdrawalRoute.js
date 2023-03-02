@@ -51,7 +51,7 @@ router.post("/approve-withdraw-status", async (req, res) => {
     );
     res.status(200).send({ message: "Status updated", withdraw });
   } catch (error) {
-    return res.status(500).json({ msg: err.message });
+    return res.status(500).json({ msg: error.message });
   }
 });
 
@@ -83,7 +83,7 @@ router.post("/decline-withdraw-status", async (req, res) => {
     res.status(200).send({ message: "Status updated", withdraw });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ msg: err.message });
+    return res.status(500).json({ msg: error.message });
   }
 });
 
