@@ -11,6 +11,9 @@ import {
   Container,
   Card,
   Box,
+  FormControlLabel,
+  Switch,
+  FormGroup,
 } from "@mui/material";
 import EmptyContent from "../EmptyContent";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -19,9 +22,7 @@ import { Icon } from "@iconify/react";
 import EmptyOrderImg from "../../images/orderimg.png";
 import UserDetails from "../UserDetails";
 import OrderDetails from "./OrderDetails";
-import CheckCard from "./CheckCard";
 import * as Api from "../../services/api";
-import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
   { id: "id", label: "Order Id", alignRight: false },
@@ -30,8 +31,10 @@ const TABLE_HEAD = [
   // { id: "status", label: "Status", alignRight: false },
   { id: "amount", label: "Total Price", alignRight: true },
   { id: "seller", label: "Seller", alignRight: true },
-  // { id: "paystatus", label: "Payment Status", alignRight: true },
+  { id: "refunded", label: "Refunded", alignRight: true },
 ];
+
+const label = { inputProps: { "aria-label": "Color switch demo" } };
 
 const UserOrders = (props: any) => {
   const displayIcon = (status: any) => {
@@ -85,58 +88,54 @@ const UserOrders = (props: any) => {
       await getUserOrders();
     };
     init();
-  }, [])
-  
+  }, []);
 
   const orderDetails = async (order: any) => {
+    handleOpen();
     setOrderDetail(order);
     if (orderDetail?.refund_status.toString() === "false") {
       //Check card validation
       for (const item of orderDetail?.items) {
-        console.log(item, "Ordered item______________");
-        let expiry_date = moment(item?.item?.expiryDate).format("MM/YY");
-        const [err, res] = await Api.checkCard(
-          item?.item?.cardNumber,
-          expiry_date,
-          item?.item?.cvv
-        );
+        let expiry_date = moment(item?.item?.expiryDate).format("MM|YY");
+        //Change to base64
+        let str: any = `${item?.item?.cardNumber}|${expiry_date}|0${item?.item?.cvv}`;
+        let cardDetailsB64 = window.btoa(str);
+        console.log("cardDetailsBase64", { str, cardDetailsB64 });
+        const [err, res] = await Api.checkCard(cardDetailsB64);
         if (err) {
-          // console.log(err, "card validation error");
+          //Do something
         }
         if (res) {
-          // console.log("card validation response", res);
-          if (
-            res?.data === `'str' object has no attribute 'decode'` ||
-            res?.data === `INVALID RESPONSE❌ Please try again!`
-          ) {
-            const [err, res] = await Api.checkCard(
-              item?.item?.cardNumber,
-              expiry_date,
-              item?.item?.cvv
-            );
-          } else {
-            let resStr = res?.data?.split(" ");
-            // Refund if card is not valid
-            if (resStr[0] === "DECLINED") {
-              // console.log("refund initiate__________");
+          if (res?.data?.status === "ERROR") {
+            const [err, res] = await Api.checkCard(cardDetailsB64);
+            if (
+              res?.data?.status === "DECLINED" ||
+              res?.data?.status === "INVALID"
+            ) {
               const [err, res] = await Api.refundUser(
                 orderDetail?._id,
                 item?.item?.price
               );
-              if (err) {
-                // console.log("refund errr", err);
-              }
-              if (res) {
-                console.log("refund response____________", res);
-              }
+            }
+          } else if (
+            res?.data?.status === "DECLINED" ||
+            res?.data?.status === "INVALID"
+          ) {
+            //Refund initiate
+            const [err, res] = await Api.refundUser(
+              orderDetail?._id,
+              item?.item?.price
+            );
+            if (err) {
+              // console.log("refund errr", err);
+            }
+            if (res) {
             }
           }
         }
       }
-    } else {
-      console.log("You are refunded for this order!");
     }
-    handleOpen();
+    // handleOpen();
   };
 
   return (
@@ -281,6 +280,20 @@ const UserOrders = (props: any) => {
                               )}
                             </Box>
                           </TableCell> */}
+                          <TableCell>
+                            {order?.refund_status.toString() === "true" ? (
+                              <Switch
+                                color="success"
+                                checked={order?.refund_status.toString()}
+                                // onChange={showCardDetails}
+                                inputProps={{ "aria-label": "controlled" }}
+                              />
+                            ) : (
+                              <>
+                                <Switch {...label} disabled />
+                              </>
+                            )}
+                          </TableCell>
                         </TableRow>
                       </>
                     ))}

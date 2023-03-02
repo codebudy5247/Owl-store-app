@@ -27,12 +27,12 @@ const Rules = () => {
       <Header title="Rules" subtitle="Owl Store > Rules" />
       <Box
         sx={{
-          width: "100%",
+          width: "90%",
           display: "flex",
           justifyContent: "center",
           alignContent: "center",
           px: 1,
-          height:"150vh",
+          // height:"150vh",
         
         }}
       >

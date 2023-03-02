@@ -68,7 +68,7 @@ const BulkAddCards = () => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [xlsxData, setXlsxData] = useState<any>();
 
-  // console.log("xlsxData______", xlsxData);
+  // console.log(xlsxData,"xlsx data __________");
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -90,8 +90,30 @@ const BulkAddCards = () => {
     inputFileRef.current?.click();
   };
 
+  function ExcelDateToJSDate(serial: any) {
+    var utc_days = Math.floor(serial - 25569);
+    var utc_value = utc_days * 86400;
+    var date_info = new Date(utc_value * 1000);
+    var fractional_day = serial - Math.floor(serial) + 0.0000001;
+    var total_seconds = Math.floor(86400 * fractional_day);
+    var seconds = total_seconds % 60;
+    total_seconds -= seconds;
+    var hours = Math.floor(total_seconds / (60 * 60));
+    var minutes = Math.floor(total_seconds / 60) % 60;
+
+    return new Date(
+      date_info.getFullYear(),
+      date_info.getMonth(),
+      date_info.getDate(),
+      hours,
+      minutes,
+      seconds
+    );
+  }
+
   const handleSubmit = async () => {
     for (const item of xlsxData) {
+      let ExpiryDate = ExcelDateToJSDate(item.expiryDate);
       const [err, res] = await Api.cardInfo(
         item.cardNumber.toString().slice(0, 6)
       );
@@ -104,7 +126,7 @@ const BulkAddCards = () => {
           zip: item.zip,
           mobile: Number(res.data.bank.phone),
           cardNumber: item.cardNumber,
-          expiryDate: item.expiryDate,
+          expiryDate: ExpiryDate,
           cvv: item.cvv,
           socialSecurityNumber: item.socialSecurityNumber,
           drivingLicenceNumber: item.drivingLicenceNumber,
@@ -116,7 +138,7 @@ const BulkAddCards = () => {
         // call add product api
         const [error, response] = await Api.createCard(payloadObj);
         if (error) {
-          toast.error("Something went wrong!", {
+          toast.error(error?.data, {
             position: toast.POSITION.TOP_RIGHT,
           });
         }

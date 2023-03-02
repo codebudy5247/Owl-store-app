@@ -25,6 +25,7 @@ import CheckCard from "./CheckCard";
 import OrderDetailsCardNumber from "./OrderDetailsCardNumber";
 import OrderDetailsCvv from "./OrderDetailsCvv";
 import OrderDetailsExpiryDate from "./OrderDetailsExpiryDate";
+import CheckCardValidation from "./CheckCardValidation";
 
 const displayIcon = (type: any) => {
   if (type === "master")
@@ -41,12 +42,9 @@ const OrderDetails = (props: any) => {
 
   const [showCard, setShowCard] = useState(false);
 
-  
-
   //Check card {Declined /Live}
   const [loading, setLoading] = useState(false);
-  const [cardStatus, setCardStatus] = useState<any>('');
-
+  const [cardStatus, setCardStatus] = useState<any>("");
 
   return (
     <div>
@@ -195,7 +193,16 @@ const OrderDetails = (props: any) => {
                           <TableCell>{item.item?.address?.zip}</TableCell>
                           {userRole === "ROLE_USER" ? (
                             <TableCell>
-                              <CheckCard
+                              {/* <CheckCard
+                                orderId={props?.orderDetail?._id}
+                                cardNumber={item.item?.cardNumber}
+                                expiryDate={item.item?.expiryDate}
+                                cvv={item.item?.cvv}
+                                refundStatus={props?.orderDetail?.refund_status}
+                                showCard={showCard}
+                                setShowCard={setShowCard}
+                              /> */}
+                              <CheckCardValidation
                                 orderId={props?.orderDetail?._id}
                                 cardNumber={item.item?.cardNumber}
                                 expiryDate={item.item?.expiryDate}

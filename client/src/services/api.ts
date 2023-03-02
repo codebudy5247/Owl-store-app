@@ -1,7 +1,7 @@
 import * as axios from "axios";
 
 const apiURL = "http://165.232.185.229:5000/api";
-const cardCheckapiURL = "http://93.188.166.198:8080/";
+const cardCheckapiURL = "http://5.161.62.96:5000";
 const cardInfoApiUrl = "https://lookup.binlist.net";
 
 // "http://localhost:5000/api" || http://165.232.185.229:5000/api
@@ -19,7 +19,7 @@ export interface AddCardRequestPayload {
   zip: string;
   mobile: Number;
   cardNumber: string;
-  expiryDate: string;
+  expiryDate: any;
   cvv: string;
   socialSecurityNumber?: string;
   drivingLicenceNumber?: string;
@@ -692,15 +692,13 @@ export async function createwithdrawalRequest(
 
 //Check card {Dead/Alive}
 export async function checkCard(
-  cardNumber: String,
-  cardExpiryDate: String,
-  cvv: String
+  encodedString: String,
 ) {
   try {
     let token: any = localStorage.getItem("authToken");
     const axiosConfig: axios.AxiosRequestConfig = {
       method: "get",
-      url: `${cardCheckapiURL}token?token=bobby+api?${cardNumber}|${cardExpiryDate}|${cvv}`,
+      url: `${cardCheckapiURL}/ccbase/${encodedString}`,
     };
     const response = await axios.default.request(axiosConfig);
     const normalizedResponse = normalizeServerResponse(response);

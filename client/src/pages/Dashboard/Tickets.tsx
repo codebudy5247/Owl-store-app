@@ -90,7 +90,7 @@ const Tickets = () => {
     <Box>
       <Navbar />
       <Header title="Tickets" subtitle="Owl Store > Tickets" />
-      <Box sx={{ height: "100vh" }}>
+      <Box sx={{ }}>
         <Box
           sx={{
             display: "flex",

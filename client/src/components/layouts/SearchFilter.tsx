@@ -20,9 +20,6 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import { countries } from "../../_mock/_countries";
-import { USAstates } from "../../_mock/_usStates";
-import RotateLeftIcon from "@mui/icons-material/RotateLeft";
-import SearchIcon from "@mui/icons-material/Search";
 import { Icon } from "@iconify/react";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
@@ -30,7 +27,6 @@ import Button, { ButtonProps } from "@mui/material/Button";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { toast } from "react-toastify";
 import * as Api from "../../services/api";
-import Chip from "@mui/material/Chip";
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: "#EE2B70",
@@ -79,7 +75,7 @@ const SearchFilter = (props: any) => {
   const [country, setCountry] = useState("");
   const [lebel, setLebel] = useState("");
   const [class_option, setClassOption] = useState("");
-  const [bin, setBin] = useState("");
+  const [bank, setBank] = useState("");
   const [type, setType] = useState("");
   const [city, setCity] = useState("");
 
@@ -168,104 +164,19 @@ const SearchFilter = (props: any) => {
         <Box sx={{ mt: 3 }}>
           <Stack spacing={3}>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
-              <Autocomplete
+              <TextField
                 fullWidth
-                id="country-select-demo"
-                // sx={{ width: 400 }}
-                options={countries}
-                onChange={(e: any, values: any) => setCountry(values.code)}
-                autoHighlight
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    {...props}
-                  >
-                    <img
-                      loading="lazy"
-                      width="20"
-                      src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                      srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                      alt=""
-                    />
-                    {option.label} ({option.code})
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Country"
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password", // disable autocomplete and autofill
-                    }}
-                  />
-                )}
-              />
-              <Autocomplete
-                fullWidth
-                id="country-select-demo"
-                options={levelOption}
-                onChange={(e: any, values: any) => setLebel(values.value)}
-                autoHighlight
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    {...props}
-                  >
-                    {option.label}
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Level"
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password", // disable autocomplete and autofill
-                    }}
-                  />
-                )}
-              />
-            </Stack>
-
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
-              <Autocomplete
-                fullWidth
-                id="country-select-demo"
-                options={classOption}
-                onChange={(e: any, values: any) => setClassOption(values.value)}
-                autoHighlight
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    {...props}
-                  >
-                    {option.label}
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Class"
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password", // disable autocomplete and autofill
-                    }}
-                  />
-                )}
+                id="bins"
+                label="Country"
+                variant="outlined"
+                onChange={(e: any) => setCountry(e.target.value)}
               />
               <TextField
                 fullWidth
                 id="bins"
-                label="Bins"
+                label="Label"
                 variant="outlined"
-                onChange={(e: any) => setBin(e.target.value)}
+                onChange={(e: any) => setLebel(e.target.value)}
               />
             </Stack>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
@@ -282,6 +193,16 @@ const SearchFilter = (props: any) => {
                 label="City"
                 variant="outlined"
                 onChange={(e: any) => setCity(e.target.value)}
+              />
+            </Stack>
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={5}>
+              <TextField
+                fullWidth
+                id="bins"
+                label="Bank"
+                variant="outlined"
+                onChange={(e: any) => setBank(e.target.value)}
               />
             </Stack>
           </Stack>
@@ -320,7 +241,7 @@ const SearchFilter = (props: any) => {
                         country === "" &&
                         lebel === "" &&
                         class_option === "" &&
-                        bin === "" &&
+                        bank === "" &&
                         type === "" &&
                         city === ""
                       ) {
@@ -329,7 +250,7 @@ const SearchFilter = (props: any) => {
                         val?.address?.country === country ||
                         val?.level === lebel ||
                         val?.class === class_option ||
-                        val?.cardNumber === bin ||
+                        val?.bankName === bank ||
                         val?.type === type ||
                         val?.address?.city === city
                       ) {

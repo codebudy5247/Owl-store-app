@@ -74,7 +74,7 @@ const Footer = () => {
           <Box>
             <Typography variant="subtitle2">2022 © Owl Store</Typography>
           </Box>
-          {approvedByAdmin.toString() === "true" ? (
+          {/* {approvedByAdmin.toString() === "true" ? (
               <></>
             ) : (
               <Box sx={{ mt: "12px" }}>
@@ -85,7 +85,7 @@ const Footer = () => {
                   Become a seller on OwlStore
                 </ColorButton>
               </Box>
-            )}
+            )} */}
           <Box sx={{ display: "flex" }}>
             <Typography variant="subtitle2">OwlStore.at</Typography>
             <Typography variant="subtitle2" sx={{ ml: 2 }}>

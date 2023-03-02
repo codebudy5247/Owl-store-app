@@ -18,61 +18,33 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
   },
 }));
 
-const classOption = [
-  {
-    value: "credit",
-    label: "Credit",
-  },
-  {
-    value: "debit",
-    label: "Debit",
-  },
-];
+//Error model
 
-const levelOption = [
-  {
-    value: "classic",
-    label: "Classic",
-  },
-  {
-    value: "platinum",
-    label: "Platinum",
-  },
-];
 
 const AddCard = () => {
   const [ccNumber, setCcNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [CVV, setCVV] = useState("");
   const [street, setStreet] = useState("");
-  const [mobile, setMobile] = useState("");
   const [zip, setZip] = useState("");
-  const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [dl, setDl] = useState("");
   const [ssn, setSsn] = useState("");
-  const [class_option, setClassOption] = useState("");
-  const [label, setLabel] = useState("");
   const [otherDetails, setOtherDetails] = useState("");
   const [price, setPrice] = useState("");
-  const [bankName, setBankName] = useState("");
 
   const [cardInfo, setCardInfo] = useState<any>();
 
-  
-
   // console.log(cardInfo, "Card Info___________");
-  console.log("expiryDate",expiryDate)
+  console.log("expiryDate", expiryDate);
 
   const onChangeCCNumber = async (e: any) => {
     setCcNumber(e.target.value);
   };
   const onChangeExpiryDate = (e: any) => {
-    
-    let date = moment(e.target.value)
-    .toISOString() //ISO 8601 format
-    // .format("MM/YY") 
+    let date = moment(e.target.value).toISOString(); //ISO 8601 format
+    // .format("MM/YY")
     setExpiryDate(date);
   };
   const onChangeCVV = (e: any) => {
@@ -80,9 +52,6 @@ const AddCard = () => {
   };
   const onChangeStreet = (e: any) => {
     setStreet(e.target.value);
-  };
-  const onChangeMobile = (e: any) => {
-    setMobile(e.target.value);
   };
   const onChangeZip = (e: any) => {
     setZip(e.target.value);
@@ -136,10 +105,9 @@ const AddCard = () => {
         bankName: cardInfo.bank.name,
         type: cardInfo.type,
       };
-
       const [err, res] = await Api.createCard(payloadObj);
       if (err) {
-        toast.error("Something went wrong!", {
+        toast.error(err?.data, {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -148,6 +116,10 @@ const AddCard = () => {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
+    } else {
+      toast.error("Try with another card number!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
   };
 
@@ -261,7 +233,7 @@ const AddCard = () => {
             id="state"
             label="State"
             variant="outlined"
-            onChange={(e:any) => setState(e.target.value) }
+            onChange={(e: any) => setState(e.target.value)}
           />
           {/* <Autocomplete
             fullWidth

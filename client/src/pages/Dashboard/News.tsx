@@ -28,11 +28,11 @@ const News = () => {
       <Header title="News" subtitle="Owl Store > News" />
       <Box
         sx={{
-          width: "100%",
+          width: "90%",
           display: "flex",
           justifyContent: "center",
           alignContent: "center",
-          height:'200vh'
+          // height:'200vh'
           // p:3
         }}
       >

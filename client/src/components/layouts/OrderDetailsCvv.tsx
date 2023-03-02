@@ -32,8 +32,8 @@ const OrderDetailsCvv = (props: any) => {
     setLoading(true);
     const [err, res] = await Api.checkCard(
       props?.cardNumber,
-      expiry_date,
-      props?.cvv
+      // expiry_date,
+      // props?.cvv
     );
     if (err) {
       console.log(err);

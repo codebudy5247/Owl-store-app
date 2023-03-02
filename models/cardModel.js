@@ -28,12 +28,12 @@ const CardSchema = new mongoose.Schema(
     },
     socialSecurityNumber: {
       type: String,
-      required: true,
+      // required: true,
       unique:true
     },
     drivingLicenceNumber: {
       type: String,
-      required: true,
+      // required: true,
       unique:true
     },
     address: addressInfo,

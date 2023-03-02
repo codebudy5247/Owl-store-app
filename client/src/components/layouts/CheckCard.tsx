@@ -35,21 +35,21 @@ const CheckCard = (props: any) => {
   let expiry_date = moment(props?.expiryDate).format("MM/YY");
 
   // console.log(expiry_date,"expiry_date_______check card")
-  console.log("cardStatus", cardStatus);
+  // console.log("cardStatus", cardStatus);
 
   //Check card validation {Dead/Alive}
   async function checkCardValidation() {
     setLoading(true);
     const [err, res] = await Api.checkCard(
       props?.cardNumber,
-      expiry_date,
-      props?.cvv
+      // expiry_date,
+      // props?.cvv
     );
     if (err) {
       console.log(err);
     }
     if (res) {
-      console.log("crd check response",res);
+      // console.log("crd check response",res);
       
       if (
         res?.data === `'str' object has no attribute 'decode'` ||
