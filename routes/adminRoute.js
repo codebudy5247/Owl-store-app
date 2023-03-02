@@ -16,10 +16,11 @@ const {
   depositMoneyUser
 } = require("../controllers/adminController");
 const IsAdmin = require("../middleware/IsAdmin")
-const {createCard} = require("../controllers/cardController");
+const {createCard,deleteCard} = require("../controllers/cardController");
 const Auth = require("../middleware/auth")
 
 router.post("/create-card", Auth, IsAdmin, createCard);
+router.delete("/delete-card/:id", Auth, IsAdmin, deleteCard);
 router.post("/register-admin", registerAdmin);
 router.post("/approve-seller", approveSeller);
 router.post("/add-user", addUser);
