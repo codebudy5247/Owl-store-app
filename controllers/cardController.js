@@ -1,7 +1,25 @@
 const Card = require("../models/cardModel");
 const User = require("../models/userModel");
 const ObjectId = require("mongoose").Types.ObjectId;
-const SoldCard = require("../models/SoldCard")
+const SoldCard = require("../models/SoldCard");
+const axios = require("axios");
+require("dotenv").config();
+
+function normalizeServerResponse(serverResponse) {
+  let response = {
+    data: serverResponse.data,
+    status: serverResponse.status,
+  };
+  return response;
+}
+
+function normalizeServerError(serverResponse) {
+  let response = {
+    data: serverResponse.message,
+    status: serverResponse.status,
+  };
+  return response;
+}
 
 //create card
 exports.createCard = async (req, res) => {
@@ -17,7 +35,7 @@ exports.createCard = async (req, res) => {
       item: newCard,
     });
   } catch (error) {
-    return res.status(500).json({success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -45,6 +63,25 @@ exports.getCard = async (req, res) => {
     res.status(200).json(card);
   } catch (error) {
     return res.status(500).json({ msg: error.message });
+  }
+};
+
+//Check card validation {http://5.161.62.96:5000/ccbase/NDE0NzIwMjUwOTAzOTE0M3wwOXwyNnw2OTM=}
+exports.checkCardValidation = async (req, res) => {
+  try {
+    const { encodedString } = req.body;
+    const axiosConfig = {
+      method: "get",
+      url: `http://5.161.62.96:5000/ccbase/${encodedString}`,
+    };
+    const response = await axios.default.request(axiosConfig);
+    const normalizedResponse = normalizeServerResponse(response);
+    res.status(200).send(normalizedResponse);
+  } catch (error) {
+    const errorObject = normalizeServerError(error);
+    res.status(500).json({
+      message: errorObject,
+    });
   }
 };
 
@@ -79,7 +116,7 @@ exports.getSellerCards = async (req, res) => {
 };
 
 //Get sold cards (Seller)
-exports.getSoldCards = async (req,res) =>{
+exports.getSoldCards = async (req, res) => {
   try {
     const sellerId = req.user._id;
     const result = await User.aggregate([
@@ -106,7 +143,7 @@ exports.getSoldCards = async (req,res) =>{
   } catch (error) {
     res.status(500).send(error);
   }
-}
+};
 
 //Update Card
 exports.updateCard = async (req, res) => {

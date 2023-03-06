@@ -106,11 +106,11 @@ const UserOrders = (props: any) => {
           //Do something
         }
         if (res) {
-          if (res?.data?.status === "ERROR") {
+          if (res?.data?.data?.status === "ERROR") {
             const [err, res] = await Api.checkCard(cardDetailsB64);
             if (
-              res?.data?.status === "DECLINED" ||
-              res?.data?.status === "INVALID"
+              res?.data?.data?.status === "DECLINED" ||
+              res?.data?.data?.status === "INVALID"
             ) {
               const [err, res] = await Api.refundUser(
                 orderDetail?._id,
@@ -118,8 +118,8 @@ const UserOrders = (props: any) => {
               );
             }
           } else if (
-            res?.data?.status === "DECLINED" ||
-            res?.data?.status === "INVALID"
+            res?.data?.data?.status === "DECLINED" ||
+            res?.data?.data?.status === "INVALID"
           ) {
             //Refund initiate
             const [err, res] = await Api.refundUser(

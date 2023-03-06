@@ -29,7 +29,8 @@ const CheckCardValidation = (props: any) => {
   console.log({props});
   const [loading, setLoading] = useState(false);
   const [cardStatus, setCardStatus] = useState<any>();
-
+  console.log("cardStatus",cardStatus);
+  
   const checkCard = async () => {
     setLoading(true);
     let expiry_date = moment(props?.expiryDate).format("MM|YY");
@@ -38,12 +39,14 @@ const CheckCardValidation = (props: any) => {
     let cardDetailsB64 = window.btoa(str);
     const [err, res] = await Api.checkCard(cardDetailsB64);
     if (err) {
-      toast.error("Something went wrong.Try after sometimes!", {
+      toast.error(err?.data, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
     if (res) {
-      setCardStatus(res?.data?.status);
+      console.log(res,"card check response");
+      
+      setCardStatus(res?.data?.data?.status);
     }
     setLoading(false);
   };

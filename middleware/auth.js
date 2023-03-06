@@ -17,12 +17,12 @@ const Auth = async (req, res, next) => {
       next();
     } catch (err) {
       console.log(err);
-      res.status(401).json({ msg: err.message });
+      res.status(401).json({ message: err.message });
     }
   }
 
   if (!token) {
-    res.status(401).json({ msg: "Invalid Authentication." });
+    res.status(401).json({ message: "Invalid Authentication." });
   }
 };
 

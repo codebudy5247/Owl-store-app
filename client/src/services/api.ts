@@ -697,8 +697,12 @@ export async function checkCard(
   try {
     let token: any = localStorage.getItem("authToken");
     const axiosConfig: axios.AxiosRequestConfig = {
-      method: "get",
-      url: `${cardCheckapiURL}/ccbase/${encodedString}`,
+      method: "post",
+      url: `${apiURL}/card/check-validation`,
+      headers: { Authorization: "Bearer " + token },
+      data:{
+        encodedString:encodedString
+      }
     };
     const response = await axios.default.request(axiosConfig);
     const normalizedResponse = normalizeServerResponse(response);

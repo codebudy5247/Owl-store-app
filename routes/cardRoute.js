@@ -7,7 +7,8 @@ const {
   getSellerCards,
   updateCard,
   deleteCard,
-  getSoldCards
+  getSoldCards,
+  checkCardValidation
 } = require("../controllers/cardController");
 const Auth = require("../middleware/auth");
 const IsSeller = require("../middleware/IsSeller");
@@ -20,6 +21,7 @@ router.get("/sold_seller_prod", Auth, IsSeller, getSoldCards);
 router.get("/", getAllCards);
 router.get("/:cardId", getCard);
 router.put('/update/:id',Auth, IsSeller,updateCard)
-router.delete('/delete/:id',Auth, IsSeller,deleteCard)
+router.delete('/delete/:id',Auth,deleteCard)
+router.post("/check-validation",Auth,checkCardValidation)
 
 module.exports = router;
